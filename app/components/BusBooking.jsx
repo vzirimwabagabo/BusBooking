@@ -161,6 +161,28 @@ const FontLoader = () => (
     .booked-seat-chip { background:var(--ink); color:var(--paper); border-radius:8px; padding:6px 12px; font-family:'Poppins',sans-serif; font-size:0.85rem; font-weight:700; }
     .modal-close-btn { width:100%; padding:14px; background:var(--ink); color:var(--paper); border:none; border-radius:12px; font-family:'Poppins',sans-serif; font-weight:700; font-size:0.85rem; letter-spacing:0.05em; text-transform:uppercase; cursor:pointer; transition:all 0.2s; }
     .modal-close-btn:hover { background:#1e1e2e; transform:translateY(-1px); }
+
+    /* PASSENGER FORM */
+    .passenger-form { width:100%; }
+    .passenger-form-title { font-family:'Poppins',sans-serif; font-size:1.4rem; font-weight:800; margin-bottom:8px; letter-spacing:-0.02em; }
+    .passenger-form-subtitle { color:var(--muted); font-size:0.78rem; margin-bottom:24px; }
+    .passenger-tabs { display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; }
+    .passenger-tab { flex:1; min-width:70px; padding:10px 8px; background:var(--cream); border:2px solid transparent; border-radius:10px; font-family:'Poppins',sans-serif; font-weight:700; font-size:0.75rem; cursor:pointer; text-align:center; transition:all 0.2s; }
+    .passenger-tab.active { background:var(--accent); color:white; border-color:var(--accent); }
+    .passenger-fields { display:flex; flex-direction:column; gap:14px; margin-bottom:20px; }
+    .passenger-field { display:flex; flex-direction:column; gap:6px; }
+    .passenger-field label { font-family:'Poppins',sans-serif; font-size:0.75rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; color:var(--ink); }
+    .passenger-field input { padding:12px; border:1.5px solid rgba(0,0,0,0.1); border-radius:10px; font-family:'Poppins',sans-serif; font-size:0.85rem; background:white; outline:none; transition:all 0.2s; }
+    .passenger-field input::placeholder { color:var(--muted); }
+    .passenger-field input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(232,93,38,0.1); }
+    .passenger-field.error input { border-color:#d63c3c; }
+    .passenger-error { font-size:0.7rem; color:#d63c3c; font-family:'Poppins',sans-serif; }
+    .passenger-actions { display:flex; gap:8px; margin-top:20px; }
+    .passenger-actions button { flex:1; padding:12px; border:none; border-radius:10px; font-family:'Poppins',sans-serif; font-weight:700; font-size:0.78rem; letter-spacing:0.05em; text-transform:uppercase; cursor:pointer; transition:all 0.2s; }
+    .btn-continue { background:var(--accent); color:white; box-shadow:0 4px 12px rgba(232,93,38,0.3); }
+    .btn-continue:hover { transform:translateY(-1px); box-shadow:0 6px 16px rgba(232,93,38,0.4); }
+    .btn-cancel { background:var(--cream); color:var(--ink); border:1.5px solid rgba(0,0,0,0.1); }
+    .btn-cancel:hover { background:rgba(0,0,0,0.05); }
   `}</style>
 );
 
@@ -332,6 +354,10 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
   const [bookingRef, setBookingRef] = useState("");
   const [confirmedSeats, setConfirmedSeats] = useState([]);
   const [departed, setDeparted] = useState(false);
+  const [showPassengerForm, setShowPassengerForm] = useState(false);
+  const [currentPassengerIdx, setCurrentPassengerIdx] = useState(0);
+  const [passengerDetails, setPassengerDetails] = useState({});
+  const [passengerErrors, setPassengerErrors] = useState({});
 
   // Load taken seats
   useEffect(() => {
@@ -406,17 +432,71 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
   };
 
  const handleBook = () => {
-    // if modifying, cancel the old booking first
-    if (modifyBooking) {
-      const bookings = JSON.parse(localStorage.getItem("rideflow_bookings") || "[]");
-      const updated = bookings.map(b => b.ref === modifyBooking.ref ? { ...b, status: "cancelled" } : b);
-      localStorage.setItem("rideflow_bookings", JSON.stringify(updated));
-    }
-
     if (selectedSeats.size === 0) return;
     if (selectedSeats.size !== passengers) {
       setWarning(`Please select exactly ${passengers} seat${passengers > 1 ? "s" : ""}.`);
       return;
+    }
+
+    // Initialize passenger details for each selected seat
+    const seatList = [...selectedSeats].sort();
+    const details = {};
+    seatList.forEach(seat => {
+      details[seat] = { name: "", email: "", phone: "" };
+    });
+    setPassengerDetails(details);
+    setCurrentPassengerIdx(0);
+    setPassengerErrors({});
+    setShowPassengerForm(true);
+  };
+
+  const validatePassengerField = (email, phone) => {
+    const errors = {};
+    if (email && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+      errors.email = "Invalid email format";
+    }
+    if (phone && !phone.match(/^[\d\s\-\+\(\)]{9,}$/)) {
+      errors.phone = "Invalid phone format";
+    }
+    return errors;
+  };
+
+  const handlePassengerChange = (seat, field, value) => {
+    setPassengerDetails(prev => ({
+      ...prev,
+      [seat]: { ...prev[seat], [field]: value }
+    }));
+    setPassengerErrors({});
+  };
+
+  const handlePassengerNext = () => {
+    const currentSeat = [...selectedSeats].sort()[currentPassengerIdx];
+    const { name, email, phone } = passengerDetails[currentSeat];
+
+    if (!name.trim()) {
+      setPassengerErrors({ name: "Name is required" });
+      return;
+    }
+
+    const fieldErrors = validatePassengerField(email, phone);
+    if (Object.keys(fieldErrors).length > 0) {
+      setPassengerErrors(fieldErrors);
+      return;
+    }
+
+    if (currentPassengerIdx < [...selectedSeats].sort().length - 1) {
+      setCurrentPassengerIdx(currentPassengerIdx + 1);
+    } else {
+      completeBooking();
+    }
+  };
+
+  const completeBooking = () => {
+    // Cancel old booking if modifying
+    if (modifyBooking) {
+      const bookings = JSON.parse(localStorage.getItem("rideflow_bookings") || "[]");
+      const updated = bookings.map(b => b.ref === modifyBooking.ref ? { ...b, status: "cancelled" } : b);
+      localStorage.setItem("rideflow_bookings", JSON.stringify(updated));
     }
 
     const newTaken = new Set([...takenSeats, ...selectedSeats]);
@@ -424,9 +504,8 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
     localStorage.setItem(STORAGE_KEY, JSON.stringify([...newTaken]));
 
     const ref = "RF-" + Math.random().toString(36).slice(2, 8).toUpperCase();
-
-    // save booking to localStorage
     const pricePerSeat = trip?.price ?? PRICE;
+
     const newBooking = {
       ref,
       tripId: trip.id,
@@ -436,15 +515,26 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
       time: trip.time,
       price: pricePerSeat,
       seats: [...selectedSeats].sort(),
+      passengers: passengerDetails,
       status: "confirmed",
+      bookedAt: new Date().toISOString(),
     };
+
     const existing = JSON.parse(localStorage.getItem("rideflow_bookings") || "[]");
     localStorage.setItem("rideflow_bookings", JSON.stringify([...existing, newBooking]));
 
     setBookingRef(ref);
     setConfirmedSeats([...selectedSeats].sort());
     setSelectedSeats(new Set());
+    setShowPassengerForm(false);
     setModalOpen(true);
+  };
+
+  const cancelPassengerForm = () => {
+    setShowPassengerForm(false);
+    setPassengerDetails({});
+    setCurrentPassengerIdx(0);
+    setPassengerErrors({});
   };
 
   const sorted = [...selectedSeats].sort();
@@ -593,16 +683,94 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
       </section>
 
       {/* ── MODAL ── */}
-      <div className={`modal-backdrop ${modalOpen ? "open" : ""}`} onClick={e => e.target === e.currentTarget && setModalOpen(false)}>
+      <div className={`modal-backdrop ${showPassengerForm || modalOpen ? "open" : ""}`} onClick={e => e.target === e.currentTarget && !showPassengerForm && setModalOpen(false)}>
         <div className="modal">
-          <div className="modal-icon"><CheckIcon /></div>
-          <h2>You're booked!</h2>
-          <p>Your seats have been reserved. Show this reference at the terminal.</p>
-          <div className="booking-ref">{bookingRef}</div>
-          <div className="booked-seats-display">
-            {confirmedSeats.map(id => <div key={id} className="booked-seat-chip">Seat {id}</div>)}
-          </div>
-          <button className="modal-close-btn" onClick={() => setModalOpen(false)}>Done, thanks!</button>
+          {showPassengerForm && (
+            <>
+              <div className="passenger-form">
+                <h2 className="passenger-form-title">Passenger Details</h2>
+                <p className="passenger-form-subtitle">Fill in the details for each passenger</p>
+
+                {/* Tabs for seats */}
+                <div className="passenger-tabs">
+                  {[...selectedSeats].sort().map((seat, idx) => (
+                    <button
+                      key={seat}
+                      className={`passenger-tab ${idx === currentPassengerIdx ? "active" : ""}`}
+                      onClick={() => setCurrentPassengerIdx(idx)}
+                    >
+                      Seat {seat}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Form fields for current passenger */}
+                {(() => {
+                  const currentSeat = [...selectedSeats].sort()[currentPassengerIdx];
+                  const details = passengerDetails[currentSeat] || { name: "", email: "", phone: "" };
+                  return (
+                    <div className="passenger-fields">
+                      <div className={`passenger-field ${passengerErrors.name ? "error" : ""}`}>
+                        <label>Full Name *</label>
+                        <input
+                          type="text"
+                          placeholder="John Doe"
+                          value={details.name}
+                          onChange={(e) => handlePassengerChange(currentSeat, "name", e.target.value)}
+                          onKeyDown={(e) => e.key === "Enter" && handlePassengerNext()}
+                        />
+                        {passengerErrors.name && <span className="passenger-error">{passengerErrors.name}</span>}
+                      </div>
+
+                      <div className={`passenger-field ${passengerErrors.email ? "error" : ""}`}>
+                        <label>Email Address</label>
+                        <input
+                          type="email"
+                          placeholder="john@example.com"
+                          value={details.email}
+                          onChange={(e) => handlePassengerChange(currentSeat, "email", e.target.value)}
+                          onKeyDown={(e) => e.key === "Enter" && handlePassengerNext()}
+                        />
+                        {passengerErrors.email && <span className="passenger-error">{passengerErrors.email}</span>}
+                      </div>
+
+                      <div className={`passenger-field ${passengerErrors.phone ? "error" : ""}`}>
+                        <label>Phone Number</label>
+                        <input
+                          type="tel"
+                          placeholder="+254 700 000000"
+                          value={details.phone}
+                          onChange={(e) => handlePassengerChange(currentSeat, "phone", e.target.value)}
+                          onKeyDown={(e) => e.key === "Enter" && handlePassengerNext()}
+                        />
+                        {passengerErrors.phone && <span className="passenger-error">{passengerErrors.phone}</span>}
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                <div className="passenger-actions">
+                  <button className="btn-cancel" onClick={cancelPassengerForm}>Cancel</button>
+                  <button className="btn-continue" onClick={handlePassengerNext}>
+                    {currentPassengerIdx === [...selectedSeats].sort().length - 1 ? "Confirm Booking" : "Next Passenger"}
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
+
+          {!showPassengerForm && modalOpen && (
+            <>
+              <div className="modal-icon"><CheckIcon /></div>
+              <h2>You're booked!</h2>
+              <p>All passenger details have been recorded. Show this reference at the terminal.</p>
+              <div className="booking-ref">{bookingRef}</div>
+              <div className="booked-seats-display">
+                {confirmedSeats.map(id => <div key={id} className="booked-seat-chip">Seat {id}</div>)}
+              </div>
+              <button className="modal-close-btn" onClick={() => setModalOpen(false)}>Done, thanks!</button>
+            </>
+          )}
         </div>
       </div>
     </>

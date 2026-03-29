@@ -148,6 +148,31 @@ const styles = `
 
   .card-divider { height:1px; background:rgba(0,0,0,0.06); margin:20px 0; }
 
+  .passengers-section { margin-bottom:20px; }
+  .passengers-header {
+    font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:700;
+    letter-spacing:0.05em; text-transform:uppercase; color:var(--ink);
+    margin-bottom:12px; display:block;
+  }
+  .passenger-detail-item {
+    background:var(--cream); border-radius:10px; padding:12px; margin-bottom:10px;
+    border:1px solid rgba(0,0,0,0.05);
+  }
+  .passenger-detail-item .seat {
+    font-family:'Poppins',sans-serif; font-weight:700; font-size:0.78rem;
+    color:var(--accent); margin-bottom:6px;
+  }
+  .passenger-detail-item .name {
+    font-family:'Poppins',sans-serif; font-weight:600; font-size:0.85rem;
+    color:var(--ink); margin-bottom:3px;
+  }
+  .passenger-detail-item .contact {
+    font-size:0.75rem; color:var(--muted); line-height:1.5;
+  }
+  .passenger-detail-item .contact span {
+    display:block; word-break:break-all;
+  }
+
   .card-total {
     display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;
   }
@@ -371,6 +396,26 @@ export default function MyBookings({ onBack, onModify }) {
                   </div>
                 ))}
               </div>
+
+              {booking.passengers && Object.keys(booking.passengers).length > 0 && (
+                <div className="passengers-section">
+                  <span className="passengers-header">Passengers</span>
+                  {booking.seats.map((seat) => {
+                    const passenger = booking.passengers[seat];
+                    if (!passenger) return null;
+                    return (
+                      <div key={seat} className="passenger-detail-item">
+                        <div className="seat">Seat {seat}</div>
+                        <div className="name">{passenger.name || "—"}</div>
+                        <div className="contact">
+                          {passenger.email && <span>📧 {passenger.email}</span>}
+                          {passenger.phone && <span>📱 {passenger.phone}</span>}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
 
               <div className="card-divider" />
 
