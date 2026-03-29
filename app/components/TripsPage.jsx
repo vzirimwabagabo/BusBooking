@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import tripsData from "../data/trips.json";
 
 const styles = `
@@ -315,16 +315,16 @@ export default function TripsPage({ onSelectTrip, onMyBookings }) {
   const [to, setTo] = useState("");
   const [travelDate, setTravelDate] = useState("");
   const [filtered, setFiltered] = useState([]);
+  const normalizedTripsRef = useRef([]);
 
-  // Normalize trip dates to be relative to today
-  const getNormalizedTrips = () => {
+  // Calculate normalized trips only once on mount
+  useEffect(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    return tripsData.trips.map((trip) => {
+    const normalized = tripsData.trips.map((trip) => {
       // Parse the original trip date
       const originalDate = new Date(trip.date);
-      const originalDay = originalDate.getDate();
       
       // Calculate offset from the original base date (2026-03-26)
       const baseDate = new Date("2026-03-26");
@@ -339,16 +339,13 @@ export default function TripsPage({ onSelectTrip, onMyBookings }) {
         date: normalizedDate.toISOString().split('T')[0]
       };
     });
-  };
 
-  const normalizedTrips = getNormalizedTrips();
-
-  useEffect(() => {
-    setFiltered(normalizedTrips);
-  }, [normalizedTrips]);
+    normalizedTripsRef.current = normalized;
+    setFiltered(normalized);
+  }, []);
 
   const handleSearch = () => {
-    const results = normalizedTrips.filter((t) => {
+    const results = normalizedTripsRef.current.filter((t) => {
       const matchFrom = from ? t.from.toLowerCase() === from.toLowerCase() : true;
       const matchTo = to ? t.to.toLowerCase() === to.toLowerCase() : true;
       const matchDate = travelDate ? t.date === travelDate : true;
