@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import tripsData from "../data/trips.json";
 
 const styles = `
@@ -314,10 +314,41 @@ export default function TripsPage({ onSelectTrip, onMyBookings }) {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [travelDate, setTravelDate] = useState("");
-  const [filtered, setFiltered] = useState(tripsData.trips);
+  const [filtered, setFiltered] = useState([]);
+
+  // Normalize trip dates to be relative to today
+  const getNormalizedTrips = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return tripsData.trips.map((trip) => {
+      // Parse the original trip date
+      const originalDate = new Date(trip.date);
+      const originalDay = originalDate.getDate();
+      
+      // Calculate offset from the original base date (2026-03-26)
+      const baseDate = new Date("2026-03-26");
+      const daysOffset = Math.floor((originalDate - baseDate) / (1000 * 60 * 60 * 24));
+      
+      // Apply offset to today to get the normalized date
+      const normalizedDate = new Date(today);
+      normalizedDate.setDate(normalizedDate.getDate() + daysOffset);
+      
+      return {
+        ...trip,
+        date: normalizedDate.toISOString().split('T')[0]
+      };
+    });
+  };
+
+  const normalizedTrips = getNormalizedTrips();
+
+  useEffect(() => {
+    setFiltered(normalizedTrips);
+  }, [normalizedTrips]);
 
   const handleSearch = () => {
-    const results = tripsData.trips.filter((t) => {
+    const results = normalizedTrips.filter((t) => {
       const matchFrom = from ? t.from.toLowerCase() === from.toLowerCase() : true;
       const matchTo = to ? t.to.toLowerCase() === to.toLowerCase() : true;
       const matchDate = travelDate ? t.date === travelDate : true;
@@ -343,6 +374,12 @@ export default function TripsPage({ onSelectTrip, onMyBookings }) {
     if (available === 0) return { cls: "full", label: "Full" };
     if (available <= 10) return { cls: "limited", label: `${available} left` };
     return { cls: "plenty", label: `${available} available` };
+  };
+
+  // Format date to readable format (e.g., "Mar 29, 2026")
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr + 'T00:00:00Z');
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
   return (
@@ -421,7 +458,7 @@ export default function TripsPage({ onSelectTrip, onMyBookings }) {
                     <div className="trip-meta">
                       <div className="trip-meta-item">
                         <span className="meta-label">Date</span>
-                        <span className="meta-val">{trip.date}</span>
+                        <span className="meta-val">{formatDate(trip.date)}</span>
                       </div>
                       <div className="trip-meta-item">
                         <span className="meta-label">Departure</span>
