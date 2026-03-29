@@ -261,7 +261,7 @@ const styles = `
   .no-results p { font-size:0.85rem; }
 `;
 
-const CITIES = ["Nairobi", "Mombasa", "Kisumu", "Nakuru", "Eldoret"];
+const CITIES = ["Eldoret", "Embu", "Garissa", "Isiolo", "Kilifi", "Kisumu", "Kitale", "Kitui", "Lodwar", "Machakos", "Malindi", "Mandera", "Marsabit", "Meru", "Mombasa", "Nairobi", "Nakuru", "Nyeri", "Thika", "Voi", "Wajir"];
 
 function TicketIcon({ className = "h-4 w-4" }) {
   return (
@@ -303,14 +303,25 @@ export default function TripsPage({ onSelectTrip, onMyBookings }) {
 
   const handleSearch = () => {
     const results = tripsData.trips.filter((t) => {
-      const matchFrom = from ? t.from === from : true;
-      const matchTo = to ? t.to === to : true;
+      const matchFrom = from ? t.from.toLowerCase() === from.toLowerCase() : true;
+      const matchTo = to ? t.to.toLowerCase() === to.toLowerCase() : true;
       return matchFrom && matchTo;
     });
     setFiltered(results);
   };
 
-  const getAvailableSeats = (trip) => trip.totalSeats - trip.takenSeats.length;
+  const getTakenSeats = (tripId) => {
+    if (typeof window === 'undefined' || !window.localStorage) return [];
+    try {
+      const stored = localStorage.getItem(`rideflow_taken_${tripId}`);
+      return stored ? JSON.parse(stored) : [];
+    } catch (err) {
+      console.warn(`Failed to parse taken seats for trip ${tripId}:`, err);
+      return [];
+    }
+  };
+
+  const getAvailableSeats = (trip) => trip.totalSeats - getTakenSeats(trip.id).length;
 
   const getSeatsBadge = (available) => {
     if (available === 0) return { cls: "full", label: "Full" };

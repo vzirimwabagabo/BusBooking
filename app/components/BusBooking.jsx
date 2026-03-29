@@ -84,6 +84,7 @@ const FontLoader = () => (
     .route-bar .arr::after { content:'→'; position:absolute; right:0; top:50%; transform:translateY(-50%); color:var(--accent); font-size:0.9rem; }
     .route-bar .detail { font-size:0.7rem; color:rgba(255,255,255,0.4); text-align:right; }
     .route-bar .detail strong { display:block; color:rgba(255,255,255,0.8); font-size:0.8rem; }
+    .departed-msg { margin-bottom:20px; padding:12px; background:#ffdddd; color:#d00; border-radius:8px; text-align:center; font-weight:600; }
     .legend { display:flex; gap:20px; margin-bottom:32px; flex-wrap:wrap; }
     .legend-item { display:flex; align-items:center; gap:8px; font-size:0.75rem; color:var(--muted); }
     .legend-dot { width:20px; height:20px; border-radius:5px; border:1.5px solid; }
@@ -118,6 +119,8 @@ const FontLoader = () => (
     .summary-panel { position:sticky; top:32px; }
     .summary-card { background:var(--ink); border-radius:20px; padding:28px; color:var(--paper); margin-bottom:16px; }
     .summary-card h3 { font-family:'Poppins',sans-serif; font-size:0.65rem; font-weight:700; letter-spacing:0.25em; text-transform:uppercase; color:var(--muted); margin-bottom:20px; }
+    .available-info { margin:16px 0; font-size:0.9rem; color:var(--muted); }
+    .available-info div { margin-bottom:4px; }
     .selected-seats-list { min-height:80px; margin-bottom:24px; }
     .no-seats-msg { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:24px 0; color:var(--muted); font-size:0.8rem; text-align:center; opacity:0.6; }
     .seat-tag { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:6px 10px; font-family:'Poppins',sans-serif; font-size:0.8rem; font-weight:700; margin:3px; cursor:pointer; transition:all 0.2s; animation:tagPop 0.3s cubic-bezier(0.34,1.56,0.64,1); }
@@ -164,8 +167,23 @@ const FontLoader = () => (
 // ── CONSTANTS ────────────────────────────────────────────────────────────────
 const ROWS = 12;
 const PRICE = 1200;
-const PRETAKEN = ["1A","1B","2C","2D","3A","4B","4D","5A","5C","6B","7A","7D","8C","9A","9B","10D"];
 const LETTERS = ["A","B","C","D"];
+
+const getWindowSeats = () => {
+  const ws = [];
+  for (let r = 1; r <= ROWS; r++) {
+    ws.push(`${r}A`, `${r}D`);
+  }
+  return ws;
+};
+
+const isTripDeparted = (trip) => {
+  if (!trip) return false;
+  const tripDateTime = new Date(`${trip.date}T${trip.time}`);
+  if (isNaN(tripDateTime.getTime())) return false;
+  const now = new Date();
+  return tripDateTime < now;
+};
 
 // ── BUS SVG ──────────────────────────────────────────────────────────────────
 function BusSVG() {
@@ -313,11 +331,21 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
   const [modalOpen, setModalOpen] = useState(false);
   const [bookingRef, setBookingRef] = useState("");
   const [confirmedSeats, setConfirmedSeats] = useState([]);
+  const [departed, setDeparted] = useState(false);
 
   // Load taken seats
   useEffect(() => {
+    const departedFlag = isTripDeparted(trip);
+    setDeparted(departedFlag);
+
+    if (departedFlag) {
+      localStorage.removeItem(STORAGE_KEY);
+      setTakenSeats(new Set());
+      return;
+    }
+
     const stored = localStorage.getItem(STORAGE_KEY);
-    let taken = stored ? JSON.parse(stored) : (trip?.takenSeats || PRETAKEN);
+    let taken = stored ? JSON.parse(stored) : [];
 
     // if modifying, release the old seats so user can repick
     if (modifyBooking) {
@@ -327,6 +355,13 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
 
     setTakenSeats(new Set(taken));
   }, []);
+
+  // Pre-select seats if modifying
+  useEffect(() => {
+    if (modifyBooking) {
+      setSelectedSeats(new Set(modifyBooking.seats));
+    }
+  }, [modifyBooking]);
 
   // Scroll progress
   useEffect(() => {
@@ -453,6 +488,8 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
               </div>
             </div>
 
+            {departed && <div className="departed-msg">This trip has already departed.</div>}
+
             <div className="legend">
               {[["ld-avail","Available"],["ld-selected","Your pick"],["ld-taken","Taken"]].map(([cls,label]) => (
                 <div className="legend-item" key={cls}>
@@ -529,6 +566,11 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
                 )}
               </div>
 
+              <div className="available-info">
+                <div>Available Seats: {(trip?.totalSeats ?? (ROWS * LETTERS.length)) - takenSeats.size}</div>
+                <div>Available Window Seats: {getWindowSeats().filter(s => !takenSeats.has(s)).length}</div>
+              </div>
+
               {warning && <div className="seat-warning">{warning}</div>}
 
               <div className="divider" />
@@ -537,8 +579,8 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
               <div className="s-row total"><span className="lbl">Total</span><span className="val">KES {total.toLocaleString()}</span></div>
               <div className="divider" />
 
-              <button className="book-btn" onClick={handleBook} disabled={selectedSeats.size === 0}>
-                Reserve Seats →
+              <button className="book-btn" onClick={handleBook} disabled={selectedSeats.size === 0 || departed}>
+                {departed ? "Trip Departed" : "Reserve Seats →"}
               </button>
             </div>
 

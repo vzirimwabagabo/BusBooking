@@ -7,8 +7,7 @@
       "date": "2026-03-26",
       "time": "08:30 AM",
       "price": 1200,
-      "totalSeats": 48,
-      "takenSeats": ["1A","1B","2C","2D","3A","4B","4D","5A","5C","6B","7A","7D","8C","9A","9B","10D"]
+      "totalSeats": 48
     },
     {
       "id": "2",
@@ -17,8 +16,7 @@
       "date": "2026-03-26",
       "time": "07:00 AM",
       "price": 1000,
-      "totalSeats": 48,
-      "takenSeats": ["1A","1C","2B","3D","4A","5B","6C","7A"]
+      "totalSeats": 48
     },
     {
       "id": "3",
@@ -27,8 +25,7 @@
       "date": "2026-03-26",
       "time": "09:00 AM",
       "price": 600,
-      "totalSeats": 48,
-      "takenSeats": ["1B","2A","3C","4D"]
+      "totalSeats": 48
     },
     {
       "id": "4",
@@ -37,8 +34,7 @@
       "date": "2026-03-26",
       "time": "10:00 AM",
       "price": 1200,
-      "totalSeats": 48,
-      "takenSeats": ["1A","2C","3B","4D","5A","6B"]
+      "totalSeats": 48
     },
     {
       "id": "5",
@@ -47,8 +43,7 @@
       "date": "2026-03-27",
       "time": "06:00 AM",
       "price": 1000,
-      "totalSeats": 48,
-      "takenSeats": ["1A","1B","2A","2B"]
+      "totalSeats": 48
     },
     {
       "id": "6",
@@ -57,8 +52,627 @@
       "date": "2026-03-27",
       "time": "08:00 AM",
       "price": 800,
-      "totalSeats": 48,
-      "takenSeats": ["1C","2D","3A","4B","5C","6D","7A","8B"]
-    }
+      "totalSeats": 48
+    },
+    {
+      "id": "7",
+      "from": "Nairobi",
+      "to": "Thika",
+      "date": "2026-03-26",
+      "time": "06:30 AM",
+      "price": 300,
+      "totalSeats": 48
+    },
+    {
+      "id": "8",
+      "from": "Thika",
+      "to": "Nairobi",
+      "date": "2026-03-26",
+      "time": "05:00 PM",
+      "price": 300,
+      "totalSeats": 48
+    },
+    {
+      "id": "9",
+      "from": "Nairobi",
+      "to": "Nyeri",
+      "date": "2026-03-27",
+      "time": "07:00 AM",
+      "price": 500,
+      "totalSeats": 48
+    },
+    {
+      "id": "10",
+      "from": "Nyeri",
+      "to": "Nairobi",
+      "date": "2026-03-27",
+      "time": "04:00 PM",
+      "price": 500,
+      "totalSeats": 48
+    },
+    {
+      "id": "11",
+      "from": "Nairobi",
+      "to": "Meru",
+      "date": "2026-03-28",
+      "time": "08:00 AM",
+      "price": 700,
+      "totalSeats": 48
+    },
+    {
+      "id": "12",
+      "from": "Meru",
+      "to": "Nairobi",
+      "date": "2026-03-28",
+      "time": "05:00 PM",
+      "price": 700,
+      "totalSeats": 48
+    },
+    {
+      "id": "13",
+      "from": "Nairobi",
+      "to": "Embu",
+      "date": "2026-03-29",
+      "time": "09:00 AM",
+      "price": 600,
+      "totalSeats": 48
+    },
+    {
+      "id": "14",
+      "from": "Embu",
+      "to": "Nairobi",
+      "date": "2026-03-29",
+      "time": "06:00 PM",
+      "price": 600,
+      "totalSeats": 48
+    },
+    {
+      "id": "15",
+      "from": "Nairobi",
+      "to": "Machakos",
+      "date": "2026-03-30",
+      "time": "07:30 AM",
+      "price": 400,
+      "totalSeats": 48
+    },
+    {
+      "id": "16",
+      "from": "Machakos",
+      "to": "Nairobi",
+      "date": "2026-03-30",
+      "time": "05:30 PM",
+      "price": 400,
+      "totalSeats": 48
+    },
+    {
+      "id": "17",
+      "from": "Nairobi",
+      "to": "Kitui",
+      "date": "2026-03-31",
+      "time": "08:00 AM",
+      "price": 500,
+      "totalSeats": 48
+    },
+    {
+      "id": "18",
+      "from": "Kitui",
+      "to": "Nairobi",
+      "date": "2026-03-31",
+      "time": "06:00 PM",
+      "price": 500,
+      "totalSeats": 48
+    },
+    {
+      "id": "19",
+      "from": "Nairobi",
+      "to": "Voi",
+      "date": "2026-04-01",
+      "time": "09:00 AM",
+      "price": 800,
+      "totalSeats": 48
+    },
+    {
+      "id": "20",
+      "from": "Voi",
+      "to": "Nairobi",
+      "date": "2026-04-01",
+      "time": "07:00 PM",
+      "price": 800,
+      "totalSeats": 48
+    },
+    {
+      "id": "21",
+      "from": "Nairobi",
+      "to": "Malindi",
+      "date": "2026-04-02",
+      "time": "10:00 AM",
+      "price": 1500,
+      "totalSeats": 48
+    },
+    {
+      "id": "22",
+      "from": "Malindi",
+      "to": "Nairobi",
+      "date": "2026-04-02",
+      "time": "08:00 PM",
+      "price": 1500,
+      "totalSeats": 48
+    },
+    {
+      "id": "23",
+      "from": "Nairobi",
+      "to": "Kilifi",
+      "date": "2026-04-03",
+      "time": "11:00 AM",
+      "price": 1400,
+      "totalSeats": 48
+    },
+    {
+      "id": "24",
+      "from": "Kilifi",
+      "to": "Nairobi",
+      "date": "2026-04-03",
+      "time": "09:00 PM",
+      "price": 1400,
+      "totalSeats": 48
+    },
+    {
+      "id": "25",
+      "from": "Nairobi",
+      "to": "Garissa",
+      "date": "2026-04-04",
+      "time": "12:00 PM",
+      "price": 1000,
+      "totalSeats": 48
+    },
+    {
+      "id": "26",
+      "from": "Garissa",
+      "to": "Nairobi",
+      "date": "2026-04-04",
+      "time": "10:00 PM",
+      "price": 1000,
+      "totalSeats": 48
+    },
+    {
+      "id": "27",
+      "from": "Nairobi",
+      "to": "Wajir",
+      "date": "2026-04-05",
+      "time": "01:00 PM",
+      "price": 1200,
+      "totalSeats": 48
+    },
+    {
+      "id": "28",
+      "from": "Wajir",
+      "to": "Nairobi",
+      "date": "2026-04-05",
+      "time": "11:00 PM",
+      "price": 1200,
+      "totalSeats": 48
+    },
+    {
+      "id": "29",
+      "from": "Nairobi",
+      "to": "Mandera",
+      "date": "2026-04-06",
+      "time": "02:00 PM",
+      "price": 1300,
+      "totalSeats": 48
+    },
+    {
+      "id": "30",
+      "from": "Mandera",
+      "to": "Nairobi",
+      "date": "2026-04-06",
+      "time": "12:00 AM",
+      "price": 1300,
+      "totalSeats": 48
+    },
+    {
+      "id": "31",
+      "from": "Nairobi",
+      "to": "Marsabit",
+      "date": "2026-04-07",
+      "time": "03:00 PM",
+      "price": 1100,
+      "totalSeats": 48
+    },
+    {
+      "id": "32",
+      "from": "Marsabit",
+      "to": "Nairobi",
+      "date": "2026-04-07",
+      "time": "01:00 AM",
+      "price": 1100,
+      "totalSeats": 48
+    },
+    {
+      "id": "33",
+      "from": "Nairobi",
+      "to": "Isiolo",
+      "date": "2026-04-08",
+      "time": "04:00 PM",
+      "price": 900,
+      "totalSeats": 48
+    },
+    {
+      "id": "34",
+      "from": "Isiolo",
+      "to": "Nairobi",
+      "date": "2026-04-08",
+      "time": "02:00 AM",
+      "price": 900,
+      "totalSeats": 48
+    },
+    {
+      "id": "35",
+      "from": "Nairobi",
+      "to": "Lodwar",
+      "date": "2026-04-09",
+      "time": "05:00 PM",
+      "price": 1400,
+      "totalSeats": 48
+    },
+    {
+      "id": "36",
+      "from": "Lodwar",
+      "to": "Nairobi",
+      "date": "2026-04-09",
+      "time": "03:00 AM",
+      "price": 1400,
+      "totalSeats": 48
+    },
+    {
+      "id": "37",
+      "from": "Nairobi",
+      "to": "Lodwar",
+      "date": "2026-04-09",
+      "time": "04:00 PM",
+      "price": 1400,
+      "totalSeats": 48
+    },
+    {
+      "id": "38",
+      "from": "Mombasa",
+      "to": "Kisumu",
+      "date": "2026-04-10",
+      "time": "07:00 AM",
+      "price": 1500,
+      "totalSeats": 48
+    },
+    {
+      "id": "39",
+      "from": "Kisumu",
+      "to": "Mombasa",
+      "date": "2026-04-10",
+      "time": "05:00 PM",
+      "price": 1500,
+      "totalSeats": 48
+    },
+    {
+      "id": "40",
+      "from": "Kisumu",
+      "to": "Nakuru",
+      "date": "2026-04-11",
+      "time": "08:00 AM",
+      "price": 800,
+      "totalSeats": 48
+    },
+    {
+      "id": "41",
+      "from": "Nakuru",
+      "to": "Kisumu",
+      "date": "2026-04-11",
+      "time": "06:00 PM",
+      "price": 800,
+      "totalSeats": 48
+    },
+    {
+      "id": "42",
+      "from": "Nakuru",
+      "to": "Eldoret",
+      "date": "2026-04-12",
+      "time": "09:00 AM",
+      "price": 600,
+      "totalSeats": 48
+    },
+    {
+      "id": "43",
+      "from": "Eldoret",
+      "to": "Nakuru",
+      "date": "2026-04-12",
+      "time": "07:00 PM",
+      "price": 600,
+      "totalSeats": 48
+    },
+    {
+      "id": "44",
+      "from": "Eldoret",
+      "to": "Kitale",
+      "date": "2026-04-13",
+      "time": "10:00 AM",
+      "price": 400,
+      "totalSeats": 48
+    },
+    {
+      "id": "45",
+      "from": "Kitale",
+      "to": "Eldoret",
+      "date": "2026-04-13",
+      "time": "08:00 PM",
+      "price": 400,
+      "totalSeats": 48
+    },
+    {
+      "id": "46",
+      "from": "Kitale",
+      "to": "Lodwar",
+      "date": "2026-04-14",
+      "time": "11:00 AM",
+      "price": 1000,
+      "totalSeats": 48
+    },
+    {
+      "id": "47",
+      "from": "Lodwar",
+      "to": "Kitale",
+      "date": "2026-04-14",
+      "time": "09:00 PM",
+      "price": 1000,
+      "totalSeats": 48
+    },
+    {
+      "id": "48",
+      "from": "Lodwar",
+      "to": "Marsabit",
+      "date": "2026-04-15",
+      "time": "12:00 PM",
+      "price": 800,
+      "totalSeats": 48
+    },
+    {
+      "id": "49",
+      "from": "Marsabit",
+      "to": "Lodwar",
+      "date": "2026-04-15",
+      "time": "10:00 PM",
+      "price": 800,
+      "totalSeats": 48
+    },
+    {
+      "id": "50",
+      "from": "Marsabit",
+      "to": "Isiolo",
+      "date": "2026-04-16",
+      "time": "01:00 PM",
+      "price": 600,
+      "totalSeats": 48
+    },
+    {
+      "id": "51",
+      "from": "Isiolo",
+      "to": "Marsabit",
+      "date": "2026-04-16",
+      "time": "11:00 PM",
+      "price": 600,
+      "totalSeats": 48
+    },
+    {
+      "id": "52",
+      "from": "Isiolo",
+      "to": "Meru",
+      "date": "2026-04-17",
+      "time": "02:00 PM",
+      "price": 500,
+      "totalSeats": 48
+    },
+    {
+      "id": "53",
+      "from": "Meru",
+      "to": "Isiolo",
+      "date": "2026-04-17",
+      "time": "12:00 AM",
+      "price": 500,
+      "totalSeats": 48
+    },
+    {
+      "id": "54",
+      "from": "Meru",
+      "to": "Nyeri",
+      "date": "2026-04-18",
+      "time": "03:00 PM",
+      "price": 400,
+      "totalSeats": 48
+    },
+    {
+      "id": "55",
+      "from": "Nyeri",
+      "to": "Meru",
+      "date": "2026-04-18",
+      "time": "01:00 AM",
+      "price": 400,
+      "totalSeats": 48
+    },
+    {
+      "id": "56",
+      "from": "Nyeri",
+      "to": "Thika",
+      "date": "2026-04-19",
+      "time": "04:00 PM",
+      "price": 300,
+      "totalSeats": 48
+    },
+    {
+      "id": "57",
+      "from": "Thika",
+      "to": "Nyeri",
+      "date": "2026-04-19",
+      "time": "02:00 AM",
+      "price": 300,
+      "totalSeats": 48
+    },
+    {
+      "id": "58",
+      "from": "Thika",
+      "to": "Embu",
+      "date": "2026-04-20",
+      "time": "05:00 PM",
+      "price": 400,
+      "totalSeats": 48
+    },
+    {
+      "id": "59",
+      "from": "Embu",
+      "to": "Thika",
+      "date": "2026-04-20",
+      "time": "03:00 AM",
+      "price": 400,
+      "totalSeats": 48
+    },
+    {
+      "id": "60",
+      "from": "Embu",
+      "to": "Machakos",
+      "date": "2026-04-21",
+      "time": "06:00 PM",
+      "price": 300,
+      "totalSeats": 48
+    },
+    {
+      "id": "61",
+      "from": "Machakos",
+      "to": "Embu",
+      "date": "2026-04-21",
+      "time": "04:00 AM",
+      "price": 300,
+      "totalSeats": 48
+    },
+    {
+      "id": "62",
+      "from": "Machakos",
+      "to": "Kitui",
+      "date": "2026-04-22",
+      "time": "07:00 PM",
+      "price": 400,
+      "totalSeats": 48
+    },
+    {
+      "id": "63",
+      "from": "Kitui",
+      "to": "Machakos",
+      "date": "2026-04-22",
+      "time": "05:00 AM",
+      "price": 400,
+      "totalSeats": 48
+    },
+    {
+      "id": "64",
+      "from": "Kitui",
+      "to": "Voi",
+      "date": "2026-04-23",
+      "time": "08:00 PM",
+      "price": 500,
+      "totalSeats": 48
+    },
+    {
+      "id": "65",
+      "from": "Voi",
+      "to": "Kitui",
+      "date": "2026-04-23",
+      "time": "06:00 AM",
+      "price": 500,
+      "totalSeats": 48
+    },
+    {
+      "id": "66",
+      "from": "Voi",
+      "to": "Malindi",
+      "date": "2026-04-24",
+      "time": "09:00 PM",
+      "price": 600,
+      "totalSeats": 48
+    },
+    {
+      "id": "67",
+      "from": "Malindi",
+      "to": "Voi",
+      "date": "2026-04-24",
+      "time": "07:00 AM",
+      "price": 600,
+      "totalSeats": 48
+    },
+    {
+      "id": "68",
+      "from": "Malindi",
+      "to": "Kilifi",
+      "date": "2026-04-25",
+      "time": "10:00 PM",
+      "price": 300,
+      "totalSeats": 48
+    },
+    {
+      "id": "69",
+      "from": "Kilifi",
+      "to": "Malindi",
+      "date": "2026-04-25",
+      "time": "08:00 AM",
+      "price": 300,
+      "totalSeats": 48
+    },
+    {
+      "id": "70",
+      "from": "Kilifi",
+      "to": "Garissa",
+      "date": "2026-04-26",
+      "time": "11:00 PM",
+      "price": 800,
+      "totalSeats": 48
+    },
+    {
+      "id": "71",
+      "from": "Garissa",
+      "to": "Kilifi",
+      "date": "2026-04-26",
+      "time": "09:00 AM",
+      "price": 800,
+      "totalSeats": 48
+    },
+    {
+      "id": "72",
+      "from": "Garissa",
+      "to": "Wajir",
+      "date": "2026-04-27",
+      "time": "12:00 AM",
+      "price": 500,
+      "totalSeats": 48
+    },
+    {
+      "id": "73",
+      "from": "Wajir",
+      "to": "Garissa",
+      "date": "2026-04-27",
+      "time": "10:00 AM",
+      "price": 500,
+      "totalSeats": 48
+    },
+    {
+      "id": "74",
+      "from": "Wajir",
+      "to": "Mandera",
+      "date": "2026-04-28",
+      "time": "01:00 AM",
+      "price": 600,
+      "totalSeats": 48
+    },
+    {
+      "id": "75",
+      "from": "Mandera",
+      "to": "Wajir",
+      "date": "2026-04-28",
+      "time": "11:00 AM",
+      "price": 600,
+      "totalSeats": 48    }
   ]
 }

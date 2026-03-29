@@ -207,6 +207,8 @@ function saveBookings(bookings) {
 
 export default function MyBookings({ onBack, onModify }) {
   const [refInput, setRefInput] = useState("");
+  const [seatsInput, setSeatsInput] = useState("");
+  const [dateInput, setDateInput] = useState("");
   const [booking, setBooking] = useState(null);
   const [notFound, setNotFound] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
@@ -215,18 +217,27 @@ export default function MyBookings({ onBack, onModify }) {
 
   const handleLookup = () => {
     const ref = refInput.trim().toUpperCase();
-    if (!ref) return;
+    const seats = seatsInput.trim().toUpperCase().split(',').map(s => s.trim()).filter(s => s);
+    const date = dateInput.trim();
+    
+    if (!ref && seats.length === 0) return;
+    
     const bookings = getBookings();
-    const found = bookings.find((b) => b.ref === ref);
-    setSearched(true);
-    if (found) {
-      setBooking(found);
-      setNotFound(false);
-    } else {
-      setBooking(null);
-      setNotFound(true);
+    let found = null;
+    
+    if (ref) {
+      found = bookings.find((b) => b.ref === ref);
+    } else if (seats.length > 0) {
+      found = bookings.find((b) => 
+        seats.every(seat => b.seats.includes(seat)) && 
+        b.status === "confirmed" &&
+        (!date || b.date === date)
+      );
     }
-    setShowCancelConfirm(false);
+    
+    setBooking(found || null);
+    setNotFound(!found);
+    setSearched(true);
   };
 
   const handleCancel = () => {
@@ -237,6 +248,21 @@ export default function MyBookings({ onBack, onModify }) {
     saveBookings(updated);
     setBooking({ ...booking, status: "cancelled" });
     setShowCancelConfirm(false);
+
+    // Release the seats back to available
+    if (!booking.tripId) {
+      console.warn("Warning: booking.tripId is missing, unable to release seats");
+      return;
+    }
+    
+    const tripStorageKey = `rideflow_taken_${booking.tripId}`;
+    try {
+      const taken = JSON.parse(localStorage.getItem(tripStorageKey) || '[]');
+      const released = taken.filter(s => !booking.seats.includes(s));
+      localStorage.setItem(tripStorageKey, JSON.stringify(released));
+    } catch (err) {
+      console.warn("Warning: Failed to parse or update trip seats storage", err);
+    }
   };
 
   return (
@@ -250,17 +276,37 @@ export default function MyBookings({ onBack, onModify }) {
             <button className="back-btn" onClick={onBack}>← Back to trips</button>
             <span className="label">Manage your trip</span>
             <h1>My Bookings</h1>
-            <p>Enter your booking reference to view, modify or cancel your reservation.</p>
+            <p>Enter your booking reference or seat numbers to view, modify or cancel your reservation.</p>
 
-            <div className="lookup-form">
-              <input
-                className="lookup-input"
-                placeholder="Enter reference e.g. RF-ABC123"
-                value={refInput}
-                onChange={(e) => setRefInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleLookup()}
-              />
-              <button className="lookup-btn" onClick={handleLookup}>Find →</button>
+            <div className="lookup-form" style={{ flexDirection: "column" }}>
+              <div style={{ display: "flex", gap: "8px" }}>
+                <input
+                  className="lookup-input"
+                  placeholder="Enter reference e.g. RF-ABC123"
+                  value={refInput}
+                  onChange={(e) => setRefInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleLookup()}
+                />
+                <button className="lookup-btn" onClick={handleLookup}>Find →</button>
+              </div>
+              <div style={{ margin: "8px 0", textAlign: "center", color: "var(--muted)", fontSize: "0.8rem" }}>OR</div>
+              <div style={{ display: "flex", gap: "8px", flexDirection: "column" }}>
+                <input
+                  className="lookup-input"
+                  placeholder="Enter seat numbers e.g. 1A,1B"
+                  value={seatsInput}
+                  onChange={(e) => setSeatsInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleLookup()}
+                />
+                <input
+                  className="lookup-input"
+                  type="date"
+                  placeholder="(Optional) Trip date to narrow search"
+                  value={dateInput}
+                  onChange={(e) => setDateInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleLookup()}
+                />
+              </div>
             </div>
           </div>
         </div>
