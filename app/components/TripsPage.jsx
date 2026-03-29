@@ -64,7 +64,7 @@ const styles = `
     box-shadow: 0 8px 32px rgba(0,0,0,0.2);
     flex-wrap: wrap;
   }
-  .search-select {
+  .search-select, .search-date {
     flex: 1;
     min-width: 140px;
     padding: 12px 16px;
@@ -76,6 +76,20 @@ const styles = `
     background: var(--cream);
     outline: none;
     cursor: pointer;
+  }
+  .search-date {
+    cursor: text;
+  }
+  .search-date:focus {
+    box-shadow: 0 0 0 3px rgba(232,93,38,0.1);
+    border-color: var(--accent);
+  }
+  .search-date {
+    cursor: text;
+  }
+  .search-date:focus {
+    box-shadow: 0 0 0 3px rgba(232,93,38,0.1);
+    border-color: var(--accent);
   }
   .search-btn {
     padding: 12px 28px;
@@ -299,13 +313,15 @@ function BusIcon({ className = "h-8 w-8" }) {
 export default function TripsPage({ onSelectTrip, onMyBookings }) {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
+  const [travelDate, setTravelDate] = useState("");
   const [filtered, setFiltered] = useState(tripsData.trips);
 
   const handleSearch = () => {
     const results = tripsData.trips.filter((t) => {
       const matchFrom = from ? t.from.toLowerCase() === from.toLowerCase() : true;
       const matchTo = to ? t.to.toLowerCase() === to.toLowerCase() : true;
-      return matchFrom && matchTo;
+      const matchDate = travelDate ? t.date === travelDate : true;
+      return matchFrom && matchTo && matchDate;
     });
     setFiltered(results);
   };
@@ -357,6 +373,13 @@ export default function TripsPage({ onSelectTrip, onMyBookings }) {
                 <option value="">To — any city</option>
                 {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
+              <input
+                type="date"
+                className="search-date"
+                value={travelDate}
+                onChange={(e) => setTravelDate(e.target.value)}
+                min={new Date().toISOString().split('T')[0]}
+              />
               <button
                 className="inline-flex min-h-[3.5rem] shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-[#e85d26] px-7 py-4 text-xs font-bold uppercase leading-none tracking-[0.22em] text-white shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl sm:min-w-[11rem]"
                 onClick={handleSearch}
