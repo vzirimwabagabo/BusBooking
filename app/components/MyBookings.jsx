@@ -1,5 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { isTripExpired } from "../utils/tripExpiration";
+import { releaseSeatsForDate } from "../utils/tripInstanceManager";
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
@@ -108,6 +110,7 @@ const styles = `
   }
   .status-badge.confirmed { background:#e8f5e9; color:#2e7d32; }
   .status-badge.cancelled { background:#fce4ec; color:#c62828; }
+  .status-badge.expired { background:#fff3e0; color:#e65100; }
 
   .card-route {
     display:flex; align-items:center; gap:12px; margin-bottom:20px;
@@ -214,6 +217,21 @@ const styles = `
   .confirm-btn.yes:hover { background:#b71c1c; }
   .confirm-btn.no { background:var(--cream); color:var(--ink); }
   .confirm-btn.no:hover { background:#ddd; }
+
+  /* DELETE BUTTON */
+  .action-btn.delete {
+    background:#f5e0dd; color:#c62828; border:1px solid rgba(198,40,40,0.2);
+  }
+  .action-btn.delete:hover { background:#ffe0e0; transform:translateY(-1px); }
+
+  /* DELETE CONFIRM */
+  .delete-confirm {
+    background:#fff3f0; border:1.5px solid rgba(198,40,40,0.3);
+    border-radius:16px; padding:24px; margin-top:16px;
+    animation: cardIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .delete-confirm h4 { font-family:'Poppins',sans-serif; font-weight:700; font-size:0.95rem; margin-bottom:8px; color:#c62828; }
+  .delete-confirm p { font-size:0.82rem; color:var(--muted); margin-bottom:16px; line-height:1.6; }
 `;
 
 const PRICE_PER_SEAT = 1200;
@@ -234,34 +252,51 @@ export default function MyBookings({ onBack, onModify }) {
   const [refInput, setRefInput] = useState("");
   const [seatsInput, setSeatsInput] = useState("");
   const [dateInput, setDateInput] = useState("");
+  const [nameInput, setNameInput] = useState("");
   const [booking, setBooking] = useState(null);
+  const [bookings, setBookings] = useState([]); // For multiple bookings from name search
   const [notFound, setNotFound] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [searched, setSearched] = useState(false);
   const bookingPrice = booking?.price ?? PRICE_PER_SEAT;
+  const bookingCardRef = useRef(null);
 
   const handleLookup = () => {
     const ref = refInput.trim().toUpperCase();
     const seats = seatsInput.trim().toUpperCase().split(',').map(s => s.trim()).filter(s => s);
     const date = dateInput.trim();
+    const name = nameInput.trim().toLowerCase();
     
-    if (!ref && seats.length === 0) return;
+    if (!ref && seats.length === 0 && !name) return;
     
-    const bookings = getBookings();
-    let found = null;
+    const allBookings = getBookings();
+    let foundBookings = [];
     
     if (ref) {
-      found = bookings.find((b) => b.ref === ref);
+      const found = allBookings.find((b) => b.ref === ref);
+      foundBookings = found ? [found] : [];
     } else if (seats.length > 0) {
-      found = bookings.find((b) => 
+      const found = allBookings.find((b) => 
         seats.every(seat => b.seats.includes(seat)) && 
         b.status === "confirmed" &&
         (!date || b.date === date)
       );
+      foundBookings = found ? [found] : [];
+    } else if (name) {
+      // Search by passenger name
+      foundBookings = allBookings.filter((b) => {
+        if (!b.passengers) return false;
+        return Object.values(b.passengers).some((passenger) => {
+          const passengerName = (passenger.name || "").toLowerCase();
+          return passengerName.includes(name);
+        });
+      });
     }
     
-    setBooking(found || null);
-    setNotFound(!found);
+    setBooking(foundBookings.length === 1 ? foundBookings[0] : null);
+    setBookings(foundBookings);
+    setNotFound(foundBookings.length === 0);
     setSearched(true);
   };
 
@@ -274,19 +309,25 @@ export default function MyBookings({ onBack, onModify }) {
     setBooking({ ...booking, status: "cancelled" });
     setShowCancelConfirm(false);
 
-    // Release the seats back to available
-    if (!booking.tripId) {
-      console.warn("Warning: booking.tripId is missing, unable to release seats");
-      return;
+    // Release the seats back to available using trip instance manager
+    if (booking.tripId && booking.date) {
+      releaseSeatsForDate(booking.tripId, booking.date, booking.seats);
     }
+  };
+
+  const handleDelete = () => {
+    const allBookings = getBookings();
+    const updated = allBookings.filter((b) => b.ref !== booking.ref);
+    saveBookings(updated);
     
-    const tripStorageKey = `rideflow_taken_${booking.tripId}`;
-    try {
-      const taken = JSON.parse(localStorage.getItem(tripStorageKey) || '[]');
-      const released = taken.filter(s => !booking.seats.includes(s));
-      localStorage.setItem(tripStorageKey, JSON.stringify(released));
-    } catch (err) {
-      console.warn("Warning: Failed to parse or update trip seats storage", err);
+    // Reset to search view
+    setBooking(null);
+    setBookings(bookings.filter((b) => b.ref !== booking.ref));
+    setShowDeleteConfirm(false);
+    
+    // If no more bookings in search results, show not found
+    if (bookings.length === 1) {
+      setNotFound(true);
     }
   };
 
@@ -301,7 +342,7 @@ export default function MyBookings({ onBack, onModify }) {
             <button className="back-btn" onClick={onBack}>← Back to trips</button>
             <span className="label">Manage your trip</span>
             <h1>My Bookings</h1>
-            <p>Enter your booking reference or seat numbers to view, modify or cancel your reservation.</p>
+            <p>Search by booking reference, passenger name, seat numbers, or trip date to view, modify or cancel your reservation.</p>
 
             <div className="lookup-form" style={{ flexDirection: "column" }}>
               <div style={{ display: "flex", gap: "8px" }}>
@@ -313,6 +354,16 @@ export default function MyBookings({ onBack, onModify }) {
                   onKeyDown={(e) => e.key === "Enter" && handleLookup()}
                 />
                 <button className="lookup-btn" onClick={handleLookup}>Find →</button>
+              </div>
+              <div style={{ margin: "8px 0", textAlign: "center", color: "var(--muted)", fontSize: "0.8rem" }}>OR</div>
+              <div style={{ display: "flex", gap: "8px", flexDirection: "column" }}>
+                <input
+                  className="lookup-input"
+                  placeholder="Enter passenger name"
+                  value={nameInput}
+                  onChange={(e) => setNameInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleLookup()}
+                />
               </div>
               <div style={{ margin: "8px 0", textAlign: "center", color: "var(--muted)", fontSize: "0.8rem" }}>OR</div>
               <div style={{ display: "flex", gap: "8px", flexDirection: "column" }}>
@@ -357,13 +408,118 @@ export default function MyBookings({ onBack, onModify }) {
             </div>
           )}
 
+          {/* Multiple bookings from name search */}
+          {bookings.length > 1 && (
+            <div>
+              <div style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "24px", color: "var(--ink)", fontFamily: "'Poppins', sans-serif" }}>
+                Found {bookings.length} bookings
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                {bookings.map((b) => (
+                  <div 
+                    key={b.ref}
+                    className="booking-card"
+                    style={{ cursor: "pointer", transition: "all 0.2s" }}
+                    onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-2px)"}
+                    onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
+                    onClick={() => {
+                      setBooking(b);
+                      // Scroll to booking card after state update
+                      setTimeout(() => {
+                        if (bookingCardRef.current) {
+                          bookingCardRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+                        }
+                      }, 0);
+                    }}
+                  >
+                    <div className="card-top">
+                      <div className="booking-ref-badge">{b.ref}</div>
+                      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                        {isTripExpired(b.date) && (
+                          <div className="status-badge expired">
+                            ⏱ Trip Completed
+                          </div>
+                        )}
+                        <div className={`status-badge ${b.status}`}>
+                          {b.status === "confirmed" ? "✓ Confirmed" : "✕ Cancelled"}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="card-route">
+                      <span className="card-city">{b.from}</span>
+                      <div className="card-arrow" />
+                      <span className="card-city">{b.to}</span>
+                    </div>
+                    <div className="card-meta">
+                      <div className="card-meta-item">
+                        <div className="meta-label">Date</div>
+                        <div className="meta-val">{b.date}</div>
+                      </div>
+                      <div className="card-meta-item">
+                        <div className="meta-label">Seats</div>
+                        <div className="meta-val">{b.seats.length}</div>
+                      </div>
+                      <div className="card-meta-item">
+                        <div className="meta-label">Total</div>
+                        <div className="meta-val">KES {(b.seats.length * (b.price || PRICE_PER_SEAT)).toLocaleString()}</div>
+                      </div>
+                    </div>
+                    <div style={{ textAlign: "center", fontSize: "0.8rem", color: "var(--muted)", marginTop: "12px" }}>
+                      Click to view details →
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* booking card */}
           {booking && (
-            <div className="booking-card">
+            <>
+              {bookings.length > 1 && (
+                <button 
+                  onClick={() => {
+                    setBooking(null);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                  style={{ 
+                    display: "inline-flex", 
+                    alignItems: "center", 
+                    gap: "8px",
+                    background: "rgba(232,93,38,0.1)", 
+                    border: "1px solid rgba(232,93,38,0.3)",
+                    color: "var(--accent)", 
+                    padding: "8px 16px", 
+                    borderRadius: "8px", 
+                    cursor: "pointer",
+                    fontFamily: "'Poppins', sans-serif",
+                    fontSize: "0.8rem",
+                    fontWeight: "600",
+                    marginBottom: "16px",
+                    transition: "all 0.2s"
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = "rgba(232,93,38,0.2)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = "rgba(232,93,38,0.1)";
+                  }}
+                >
+                  ← Back to Bookings List
+                </button>
+              )}
+            <div className="booking-card" ref={bookingCardRef}>
               <div className="card-top">
                 <div className="booking-ref-badge">{booking.ref}</div>
-                <div className={`status-badge ${booking.status}`}>
-                  {booking.status === "confirmed" ? "✓ Confirmed" : "✕ Cancelled"}
+                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                  {isTripExpired(booking.date) && (
+                    <div className="status-badge expired">
+                      ⏱ Trip Completed
+                    </div>
+                  )}
+                  <div className={`status-badge ${booking.status}`}>
+                    {booking.status === "confirmed" ? "✓ Confirmed" : "✕ Cancelled"}
+                  </div>
                 </div>
               </div>
 
@@ -423,14 +579,21 @@ export default function MyBookings({ onBack, onModify }) {
                 <span className="lbl">Total paid</span>
                 <span className="val">KES {(booking.seats.length * bookingPrice).toLocaleString()}</span>
               </div>
-
-              {booking.status === "confirmed" && (
+              {booking.status === "confirmed" && !isTripExpired(booking.date) && (
                 <div className="card-actions">
                   <button className="action-btn modify" onClick={() => onModify(booking)}>
                     ✎ Modify Seats
                   </button>
                   <button className="action-btn cancel" onClick={() => setShowCancelConfirm(true)}>
                     ✕ Cancel Booking
+                  </button>
+                </div>
+              )}
+              
+              {(booking.status === "cancelled" || isTripExpired(booking.date)) && (
+                <div className="card-actions">
+                  <button className="action-btn delete" onClick={() => setShowDeleteConfirm(true)}>
+                    🗑 Remove from History
                   </button>
                 </div>
               )}
@@ -445,7 +608,19 @@ export default function MyBookings({ onBack, onModify }) {
                   </div>
                 </div>
               )}
+
+              {showDeleteConfirm && (
+                <div className="delete-confirm">
+                  <h4>Remove this booking from history?</h4>
+                  <p>This booking will be permanently deleted from your history. {booking.status === "confirmed" && "You should keep this for your records."} This cannot be undone.</p>
+                  <div className="confirm-btns">
+                    <button className="confirm-btn yes" onClick={handleDelete}>Yes, delete it</button>
+                    <button className="confirm-btn no" onClick={() => setShowDeleteConfirm(false)}>Keep it</button>
+                  </div>
+                </div>
+              )}
             </div>
+            </>
           )}
         </div>
       </div>

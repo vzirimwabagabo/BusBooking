@@ -7,7 +7,19 @@
       "date": "2026-03-26",
       "time": "08:30 AM",
       "price": 1200,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 10,
+      "busType": "Standard Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "James Kipchoge",
+        "rating": 4.8
+      }
     },
     {
       "id": "2",
@@ -16,7 +28,18 @@
       "date": "2026-03-26",
       "time": "07:00 AM",
       "price": 1000,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 8,
+      "busType": "VIP Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet"
+      ],
+      "driver": {
+        "name": "Samuel Mwangi",
+        "rating": 4.7
+      }
     },
     {
       "id": "3",
@@ -25,7 +48,18 @@
       "date": "2026-03-26",
       "time": "09:00 AM",
       "price": 600,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 2,
+      "busType": "Executive Coach",
+      "amenities": [
+        "AC",
+        "Toilet",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "David Kariuki",
+        "rating": 4.9
+      }
     },
     {
       "id": "4",
@@ -34,7 +68,17 @@
       "date": "2026-03-26",
       "time": "10:00 AM",
       "price": 1200,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 10,
+      "busType": "Express Coach",
+      "amenities": [
+        "AC",
+        "Toilet"
+      ],
+      "driver": {
+        "name": "Joseph Kiplagat",
+        "rating": 4.6
+      }
     },
     {
       "id": "5",
@@ -43,7 +87,20 @@
       "date": "2026-03-27",
       "time": "06:00 AM",
       "price": 1000,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 8,
+      "busType": "Standard Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet",
+        "USB Charger",
+        "Reclining Seats"
+      ],
+      "driver": {
+        "name": "Moses Mutua",
+        "rating": 4.8
+      }
     },
     {
       "id": "6",
@@ -52,7 +109,17 @@
       "date": "2026-03-27",
       "time": "08:00 AM",
       "price": 800,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 4,
+      "busType": "VIP Coach",
+      "amenities": [
+        "AC",
+        "WiFi"
+      ],
+      "driver": {
+        "name": "Peter Ochieng",
+        "rating": 4.7
+      }
     },
     {
       "id": "7",
@@ -61,7 +128,19 @@
       "date": "2026-03-26",
       "time": "06:30 AM",
       "price": 300,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 1,
+      "busType": "Executive Coach",
+      "amenities": [
+        "AC",
+        "Toilet",
+        "Reclining Seats",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "John Kamau",
+        "rating": 4.9
+      }
     },
     {
       "id": "8",
@@ -70,7 +149,19 @@
       "date": "2026-03-26",
       "time": "05:00 PM",
       "price": 300,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 1,
+      "busType": "Express Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "Henry Kipchoge",
+        "rating": 4.5
+      }
     },
     {
       "id": "9",
@@ -79,7 +170,18 @@
       "date": "2026-03-27",
       "time": "07:00 AM",
       "price": 500,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 2,
+      "busType": "Standard Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet"
+      ],
+      "driver": {
+        "name": "Paul Kimani",
+        "rating": 4.8
+      }
     },
     {
       "id": "10",
@@ -88,7 +190,18 @@
       "date": "2026-03-27",
       "time": "04:00 PM",
       "price": 500,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 2,
+      "busType": "VIP Coach",
+      "amenities": [
+        "AC",
+        "Toilet",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "Robert Kipchoge",
+        "rating": 4.7
+      }
     },
     {
       "id": "11",
@@ -97,7 +210,17 @@
       "date": "2026-03-28",
       "time": "08:00 AM",
       "price": 700,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 6,
+      "busType": "Executive Coach",
+      "amenities": [
+        "AC",
+        "Toilet"
+      ],
+      "driver": {
+        "name": "James Kipchoge",
+        "rating": 4.8
+      }
     },
     {
       "id": "12",
@@ -106,7 +229,20 @@
       "date": "2026-03-28",
       "time": "05:00 PM",
       "price": 700,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 6,
+      "busType": "Express Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet",
+        "USB Charger",
+        "Reclining Seats"
+      ],
+      "driver": {
+        "name": "Samuel Mwangi",
+        "rating": 4.7
+      }
     },
     {
       "id": "13",
@@ -115,7 +251,17 @@
       "date": "2026-03-29",
       "time": "09:00 AM",
       "price": 600,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 3,
+      "busType": "Standard Coach",
+      "amenities": [
+        "AC",
+        "WiFi"
+      ],
+      "driver": {
+        "name": "David Kariuki",
+        "rating": 4.9
+      }
     },
     {
       "id": "14",
@@ -124,7 +270,19 @@
       "date": "2026-03-29",
       "time": "06:00 PM",
       "price": 600,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 3,
+      "busType": "VIP Coach",
+      "amenities": [
+        "AC",
+        "Toilet",
+        "Reclining Seats",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "Joseph Kiplagat",
+        "rating": 4.6
+      }
     },
     {
       "id": "15",
@@ -133,7 +291,19 @@
       "date": "2026-03-30",
       "time": "07:30 AM",
       "price": 400,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 2,
+      "busType": "Executive Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "Moses Mutua",
+        "rating": 4.8
+      }
     },
     {
       "id": "16",
@@ -142,7 +312,18 @@
       "date": "2026-03-30",
       "time": "05:30 PM",
       "price": 400,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 2,
+      "busType": "Express Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet"
+      ],
+      "driver": {
+        "name": "Peter Ochieng",
+        "rating": 4.7
+      }
     },
     {
       "id": "17",
@@ -151,7 +332,18 @@
       "date": "2026-03-31",
       "time": "08:00 AM",
       "price": 500,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 4,
+      "busType": "Standard Coach",
+      "amenities": [
+        "AC",
+        "Toilet",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "John Kamau",
+        "rating": 4.9
+      }
     },
     {
       "id": "18",
@@ -160,7 +352,17 @@
       "date": "2026-03-31",
       "time": "06:00 PM",
       "price": 500,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 4,
+      "busType": "VIP Coach",
+      "amenities": [
+        "AC",
+        "Toilet"
+      ],
+      "driver": {
+        "name": "Henry Kipchoge",
+        "rating": 4.5
+      }
     },
     {
       "id": "19",
@@ -169,7 +371,20 @@
       "date": "2026-04-01",
       "time": "09:00 AM",
       "price": 800,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Executive Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet",
+        "USB Charger",
+        "Reclining Seats"
+      ],
+      "driver": {
+        "name": "Paul Kimani",
+        "rating": 4.8
+      }
     },
     {
       "id": "20",
@@ -178,7 +393,17 @@
       "date": "2026-04-01",
       "time": "07:00 PM",
       "price": 800,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Express Coach",
+      "amenities": [
+        "AC",
+        "WiFi"
+      ],
+      "driver": {
+        "name": "Robert Kipchoge",
+        "rating": 4.7
+      }
     },
     {
       "id": "21",
@@ -187,7 +412,19 @@
       "date": "2026-04-02",
       "time": "10:00 AM",
       "price": 1500,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 12,
+      "busType": "Standard Coach",
+      "amenities": [
+        "AC",
+        "Toilet",
+        "Reclining Seats",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "James Kipchoge",
+        "rating": 4.8
+      }
     },
     {
       "id": "22",
@@ -196,7 +433,19 @@
       "date": "2026-04-02",
       "time": "08:00 PM",
       "price": 1500,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 12,
+      "busType": "VIP Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "Samuel Mwangi",
+        "rating": 4.7
+      }
     },
     {
       "id": "23",
@@ -205,7 +454,18 @@
       "date": "2026-04-03",
       "time": "11:00 AM",
       "price": 1400,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 11,
+      "busType": "Executive Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet"
+      ],
+      "driver": {
+        "name": "David Kariuki",
+        "rating": 4.9
+      }
     },
     {
       "id": "24",
@@ -214,7 +474,18 @@
       "date": "2026-04-03",
       "time": "09:00 PM",
       "price": 1400,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 11,
+      "busType": "Express Coach",
+      "amenities": [
+        "AC",
+        "Toilet",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "Joseph Kiplagat",
+        "rating": 4.6
+      }
     },
     {
       "id": "25",
@@ -223,7 +494,17 @@
       "date": "2026-04-04",
       "time": "12:00 PM",
       "price": 1000,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 7,
+      "busType": "Standard Coach",
+      "amenities": [
+        "AC",
+        "Toilet"
+      ],
+      "driver": {
+        "name": "Moses Mutua",
+        "rating": 4.8
+      }
     },
     {
       "id": "26",
@@ -232,7 +513,20 @@
       "date": "2026-04-04",
       "time": "10:00 PM",
       "price": 1000,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 7,
+      "busType": "VIP Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet",
+        "USB Charger",
+        "Reclining Seats"
+      ],
+      "driver": {
+        "name": "Peter Ochieng",
+        "rating": 4.7
+      }
     },
     {
       "id": "27",
@@ -241,7 +535,17 @@
       "date": "2026-04-05",
       "time": "01:00 PM",
       "price": 1200,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 13,
+      "busType": "Executive Coach",
+      "amenities": [
+        "AC",
+        "WiFi"
+      ],
+      "driver": {
+        "name": "John Kamau",
+        "rating": 4.9
+      }
     },
     {
       "id": "28",
@@ -250,7 +554,19 @@
       "date": "2026-04-05",
       "time": "11:00 PM",
       "price": 1200,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 13,
+      "busType": "Express Coach",
+      "amenities": [
+        "AC",
+        "Toilet",
+        "Reclining Seats",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "Henry Kipchoge",
+        "rating": 4.5
+      }
     },
     {
       "id": "29",
@@ -259,7 +575,19 @@
       "date": "2026-04-06",
       "time": "02:00 PM",
       "price": 1300,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 16,
+      "busType": "Standard Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "Paul Kimani",
+        "rating": 4.8
+      }
     },
     {
       "id": "30",
@@ -268,7 +596,18 @@
       "date": "2026-04-06",
       "time": "12:00 AM",
       "price": 1300,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 16,
+      "busType": "VIP Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet"
+      ],
+      "driver": {
+        "name": "Robert Kipchoge",
+        "rating": 4.7
+      }
     },
     {
       "id": "31",
@@ -277,7 +616,18 @@
       "date": "2026-04-07",
       "time": "03:00 PM",
       "price": 1100,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 12,
+      "busType": "Executive Coach",
+      "amenities": [
+        "AC",
+        "Toilet",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "James Kipchoge",
+        "rating": 4.8
+      }
     },
     {
       "id": "32",
@@ -286,7 +636,17 @@
       "date": "2026-04-07",
       "time": "01:00 AM",
       "price": 1100,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 12,
+      "busType": "Express Coach",
+      "amenities": [
+        "AC",
+        "Toilet"
+      ],
+      "driver": {
+        "name": "Samuel Mwangi",
+        "rating": 4.7
+      }
     },
     {
       "id": "33",
@@ -295,7 +655,20 @@
       "date": "2026-04-08",
       "time": "04:00 PM",
       "price": 900,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Standard Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet",
+        "USB Charger",
+        "Reclining Seats"
+      ],
+      "driver": {
+        "name": "David Kariuki",
+        "rating": 4.9
+      }
     },
     {
       "id": "34",
@@ -304,7 +677,17 @@
       "date": "2026-04-08",
       "time": "02:00 AM",
       "price": 900,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "VIP Coach",
+      "amenities": [
+        "AC",
+        "WiFi"
+      ],
+      "driver": {
+        "name": "Joseph Kiplagat",
+        "rating": 4.6
+      }
     },
     {
       "id": "35",
@@ -313,7 +696,19 @@
       "date": "2026-04-09",
       "time": "05:00 PM",
       "price": 1400,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 14,
+      "busType": "Executive Coach",
+      "amenities": [
+        "AC",
+        "Toilet",
+        "Reclining Seats",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "Moses Mutua",
+        "rating": 4.8
+      }
     },
     {
       "id": "36",
@@ -322,7 +717,19 @@
       "date": "2026-04-09",
       "time": "03:00 AM",
       "price": 1400,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 14,
+      "busType": "Express Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "Peter Ochieng",
+        "rating": 4.7
+      }
     },
     {
       "id": "37",
@@ -331,7 +738,18 @@
       "date": "2026-04-09",
       "time": "04:00 PM",
       "price": 1400,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 14,
+      "busType": "Standard Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet"
+      ],
+      "driver": {
+        "name": "John Kamau",
+        "rating": 4.9
+      }
     },
     {
       "id": "38",
@@ -340,7 +758,18 @@
       "date": "2026-04-10",
       "time": "07:00 AM",
       "price": 1500,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 15,
+      "busType": "VIP Coach",
+      "amenities": [
+        "AC",
+        "Toilet",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "Henry Kipchoge",
+        "rating": 4.5
+      }
     },
     {
       "id": "39",
@@ -349,7 +778,17 @@
       "date": "2026-04-10",
       "time": "05:00 PM",
       "price": 1500,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 15,
+      "busType": "Executive Coach",
+      "amenities": [
+        "AC",
+        "Toilet"
+      ],
+      "driver": {
+        "name": "Paul Kimani",
+        "rating": 4.8
+      }
     },
     {
       "id": "40",
@@ -358,7 +797,20 @@
       "date": "2026-04-11",
       "time": "08:00 AM",
       "price": 800,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Express Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet",
+        "USB Charger",
+        "Reclining Seats"
+      ],
+      "driver": {
+        "name": "Robert Kipchoge",
+        "rating": 4.7
+      }
     },
     {
       "id": "41",
@@ -367,7 +819,17 @@
       "date": "2026-04-11",
       "time": "06:00 PM",
       "price": 800,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Standard Coach",
+      "amenities": [
+        "AC",
+        "WiFi"
+      ],
+      "driver": {
+        "name": "James Kipchoge",
+        "rating": 4.8
+      }
     },
     {
       "id": "42",
@@ -376,7 +838,19 @@
       "date": "2026-04-12",
       "time": "09:00 AM",
       "price": 600,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "VIP Coach",
+      "amenities": [
+        "AC",
+        "Toilet",
+        "Reclining Seats",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "Samuel Mwangi",
+        "rating": 4.7
+      }
     },
     {
       "id": "43",
@@ -385,7 +859,19 @@
       "date": "2026-04-12",
       "time": "07:00 PM",
       "price": 600,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Executive Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "David Kariuki",
+        "rating": 4.9
+      }
     },
     {
       "id": "44",
@@ -394,7 +880,18 @@
       "date": "2026-04-13",
       "time": "10:00 AM",
       "price": 400,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Express Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet"
+      ],
+      "driver": {
+        "name": "Joseph Kiplagat",
+        "rating": 4.6
+      }
     },
     {
       "id": "45",
@@ -403,7 +900,18 @@
       "date": "2026-04-13",
       "time": "08:00 PM",
       "price": 400,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Standard Coach",
+      "amenities": [
+        "AC",
+        "Toilet",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "Moses Mutua",
+        "rating": 4.8
+      }
     },
     {
       "id": "46",
@@ -412,7 +920,17 @@
       "date": "2026-04-14",
       "time": "11:00 AM",
       "price": 1000,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "VIP Coach",
+      "amenities": [
+        "AC",
+        "Toilet"
+      ],
+      "driver": {
+        "name": "Peter Ochieng",
+        "rating": 4.7
+      }
     },
     {
       "id": "47",
@@ -421,7 +939,20 @@
       "date": "2026-04-14",
       "time": "09:00 PM",
       "price": 1000,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Executive Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet",
+        "USB Charger",
+        "Reclining Seats"
+      ],
+      "driver": {
+        "name": "John Kamau",
+        "rating": 4.9
+      }
     },
     {
       "id": "48",
@@ -430,7 +961,17 @@
       "date": "2026-04-15",
       "time": "12:00 PM",
       "price": 800,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Express Coach",
+      "amenities": [
+        "AC",
+        "WiFi"
+      ],
+      "driver": {
+        "name": "Henry Kipchoge",
+        "rating": 4.5
+      }
     },
     {
       "id": "49",
@@ -439,7 +980,19 @@
       "date": "2026-04-15",
       "time": "10:00 PM",
       "price": 800,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Standard Coach",
+      "amenities": [
+        "AC",
+        "Toilet",
+        "Reclining Seats",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "Paul Kimani",
+        "rating": 4.8
+      }
     },
     {
       "id": "50",
@@ -448,7 +1001,19 @@
       "date": "2026-04-16",
       "time": "01:00 PM",
       "price": 600,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "VIP Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "Robert Kipchoge",
+        "rating": 4.7
+      }
     },
     {
       "id": "51",
@@ -457,7 +1022,18 @@
       "date": "2026-04-16",
       "time": "11:00 PM",
       "price": 600,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Executive Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet"
+      ],
+      "driver": {
+        "name": "James Kipchoge",
+        "rating": 4.8
+      }
     },
     {
       "id": "52",
@@ -466,7 +1042,18 @@
       "date": "2026-04-17",
       "time": "02:00 PM",
       "price": 500,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Express Coach",
+      "amenities": [
+        "AC",
+        "Toilet",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "Samuel Mwangi",
+        "rating": 4.7
+      }
     },
     {
       "id": "53",
@@ -475,7 +1062,17 @@
       "date": "2026-04-17",
       "time": "12:00 AM",
       "price": 500,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Standard Coach",
+      "amenities": [
+        "AC",
+        "Toilet"
+      ],
+      "driver": {
+        "name": "David Kariuki",
+        "rating": 4.9
+      }
     },
     {
       "id": "54",
@@ -484,7 +1081,20 @@
       "date": "2026-04-18",
       "time": "03:00 PM",
       "price": 400,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "VIP Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet",
+        "USB Charger",
+        "Reclining Seats"
+      ],
+      "driver": {
+        "name": "Joseph Kiplagat",
+        "rating": 4.6
+      }
     },
     {
       "id": "55",
@@ -493,7 +1103,17 @@
       "date": "2026-04-18",
       "time": "01:00 AM",
       "price": 400,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Executive Coach",
+      "amenities": [
+        "AC",
+        "WiFi"
+      ],
+      "driver": {
+        "name": "Moses Mutua",
+        "rating": 4.8
+      }
     },
     {
       "id": "56",
@@ -502,7 +1122,19 @@
       "date": "2026-04-19",
       "time": "04:00 PM",
       "price": 300,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Express Coach",
+      "amenities": [
+        "AC",
+        "Toilet",
+        "Reclining Seats",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "Peter Ochieng",
+        "rating": 4.7
+      }
     },
     {
       "id": "57",
@@ -511,7 +1143,19 @@
       "date": "2026-04-19",
       "time": "02:00 AM",
       "price": 300,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Standard Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "John Kamau",
+        "rating": 4.9
+      }
     },
     {
       "id": "58",
@@ -520,7 +1164,18 @@
       "date": "2026-04-20",
       "time": "05:00 PM",
       "price": 400,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "VIP Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet"
+      ],
+      "driver": {
+        "name": "Henry Kipchoge",
+        "rating": 4.5
+      }
     },
     {
       "id": "59",
@@ -529,7 +1184,18 @@
       "date": "2026-04-20",
       "time": "03:00 AM",
       "price": 400,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Executive Coach",
+      "amenities": [
+        "AC",
+        "Toilet",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "Paul Kimani",
+        "rating": 4.8
+      }
     },
     {
       "id": "60",
@@ -538,7 +1204,17 @@
       "date": "2026-04-21",
       "time": "06:00 PM",
       "price": 300,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Express Coach",
+      "amenities": [
+        "AC",
+        "Toilet"
+      ],
+      "driver": {
+        "name": "Robert Kipchoge",
+        "rating": 4.7
+      }
     },
     {
       "id": "61",
@@ -547,7 +1223,20 @@
       "date": "2026-04-21",
       "time": "04:00 AM",
       "price": 300,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Standard Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet",
+        "USB Charger",
+        "Reclining Seats"
+      ],
+      "driver": {
+        "name": "James Kipchoge",
+        "rating": 4.8
+      }
     },
     {
       "id": "62",
@@ -556,7 +1245,17 @@
       "date": "2026-04-22",
       "time": "07:00 PM",
       "price": 400,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "VIP Coach",
+      "amenities": [
+        "AC",
+        "WiFi"
+      ],
+      "driver": {
+        "name": "Samuel Mwangi",
+        "rating": 4.7
+      }
     },
     {
       "id": "63",
@@ -565,7 +1264,19 @@
       "date": "2026-04-22",
       "time": "05:00 AM",
       "price": 400,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Executive Coach",
+      "amenities": [
+        "AC",
+        "Toilet",
+        "Reclining Seats",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "David Kariuki",
+        "rating": 4.9
+      }
     },
     {
       "id": "64",
@@ -574,7 +1285,19 @@
       "date": "2026-04-23",
       "time": "08:00 PM",
       "price": 500,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Express Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "Joseph Kiplagat",
+        "rating": 4.6
+      }
     },
     {
       "id": "65",
@@ -583,7 +1306,18 @@
       "date": "2026-04-23",
       "time": "06:00 AM",
       "price": 500,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Standard Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet"
+      ],
+      "driver": {
+        "name": "Moses Mutua",
+        "rating": 4.8
+      }
     },
     {
       "id": "66",
@@ -592,7 +1326,18 @@
       "date": "2026-04-24",
       "time": "09:00 PM",
       "price": 600,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "VIP Coach",
+      "amenities": [
+        "AC",
+        "Toilet",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "Peter Ochieng",
+        "rating": 4.7
+      }
     },
     {
       "id": "67",
@@ -601,7 +1346,17 @@
       "date": "2026-04-24",
       "time": "07:00 AM",
       "price": 600,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Executive Coach",
+      "amenities": [
+        "AC",
+        "Toilet"
+      ],
+      "driver": {
+        "name": "John Kamau",
+        "rating": 4.9
+      }
     },
     {
       "id": "68",
@@ -610,7 +1365,20 @@
       "date": "2026-04-25",
       "time": "10:00 PM",
       "price": 300,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Express Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet",
+        "USB Charger",
+        "Reclining Seats"
+      ],
+      "driver": {
+        "name": "Henry Kipchoge",
+        "rating": 4.5
+      }
     },
     {
       "id": "69",
@@ -619,7 +1387,17 @@
       "date": "2026-04-25",
       "time": "08:00 AM",
       "price": 300,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Standard Coach",
+      "amenities": [
+        "AC",
+        "WiFi"
+      ],
+      "driver": {
+        "name": "Paul Kimani",
+        "rating": 4.8
+      }
     },
     {
       "id": "70",
@@ -628,7 +1406,19 @@
       "date": "2026-04-26",
       "time": "11:00 PM",
       "price": 800,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "VIP Coach",
+      "amenities": [
+        "AC",
+        "Toilet",
+        "Reclining Seats",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "Robert Kipchoge",
+        "rating": 4.7
+      }
     },
     {
       "id": "71",
@@ -637,7 +1427,19 @@
       "date": "2026-04-26",
       "time": "09:00 AM",
       "price": 800,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Executive Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "James Kipchoge",
+        "rating": 4.8
+      }
     },
     {
       "id": "72",
@@ -646,7 +1448,18 @@
       "date": "2026-04-27",
       "time": "12:00 AM",
       "price": 500,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Express Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet"
+      ],
+      "driver": {
+        "name": "Samuel Mwangi",
+        "rating": 4.7
+      }
     },
     {
       "id": "73",
@@ -655,7 +1468,18 @@
       "date": "2026-04-27",
       "time": "10:00 AM",
       "price": 500,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Standard Coach",
+      "amenities": [
+        "AC",
+        "Toilet",
+        "USB Charger"
+      ],
+      "driver": {
+        "name": "David Kariuki",
+        "rating": 4.9
+      }
     },
     {
       "id": "74",
@@ -664,7 +1488,17 @@
       "date": "2026-04-28",
       "time": "01:00 AM",
       "price": 600,
-      "totalSeats": 48
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "VIP Coach",
+      "amenities": [
+        "AC",
+        "Toilet"
+      ],
+      "driver": {
+        "name": "Joseph Kiplagat",
+        "rating": 4.6
+      }
     },
     {
       "id": "75",
@@ -673,6 +1507,20 @@
       "date": "2026-04-28",
       "time": "11:00 AM",
       "price": 600,
-      "totalSeats": 48    }
+      "totalSeats": 48,
+      "duration": 5,
+      "busType": "Executive Coach",
+      "amenities": [
+        "WiFi",
+        "AC",
+        "Toilet",
+        "USB Charger",
+        "Reclining Seats"
+      ],
+      "driver": {
+        "name": "Moses Mutua",
+        "rating": 4.8
+      }
+    }
   ]
 }

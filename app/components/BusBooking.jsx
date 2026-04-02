@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import Receipt from "./Receipt";
 
 // ── GOOGLE FONTS + CSS VARS (inject once) ───────────────────────────────────
 const FontLoader = () => (
@@ -91,6 +92,7 @@ const FontLoader = () => (
     .ld-avail { background:var(--seat-avail); border-color:var(--seat-border); }
     .ld-taken { background:var(--seat-taken); border-color:var(--seat-taken); }
     .ld-selected { background:var(--seat-selected); border-color:var(--seat-selected); }
+    .legend-note { font-size:0.7rem; color:var(--muted); margin-top:8px; font-style:italic; }
 
     /* BUS FLOOR */
     .bus-floor { background:var(--cream); border-radius:32px 32px 20px 20px; padding:32px 24px; border:1.5px solid rgba(0,0,0,0.08); box-shadow:0 4px 24px rgba(0,0,0,0.06),inset 0 1px 0 rgba(255,255,255,0.8); }
@@ -330,12 +332,17 @@ function HeroSection({ progress }) {
 
 // ── SEAT BUTTON ───────────────────────────────────────────────────────────────
 function Seat({ id, taken, selected, onClick }) {
+  // Window seats: columns A and D (first and last)
+  // Aisle seats: columns B and C (middle)
+  const seatType = (id.includes('A') || id.includes('D')) ? 'window' : 'aisle';
+  
   return (
     <button
-      className={`seat ${taken ? "taken" : ""} ${selected ? "seat-sel" : ""}`}
+      className={`seat ${taken ? "taken" : ""} ${selected ? "seat-sel" : ""} ${seatType}-seat`}
       onClick={() => !taken && onClick(id)}
       disabled={taken}
-      aria-label={`Seat ${id}${taken ? " taken" : selected ? " selected" : ""}`}
+      title={`${id} (${seatType})`}
+      aria-label={`Seat ${id} ${seatType}${taken ? " taken" : selected ? " selected" : ""}`}
     >
       {!taken && id}
     </button>
@@ -358,6 +365,8 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
   const [currentPassengerIdx, setCurrentPassengerIdx] = useState(0);
   const [passengerDetails, setPassengerDetails] = useState({});
   const [passengerErrors, setPassengerErrors] = useState({});
+  const [currentBooking, setCurrentBooking] = useState(null);
+  const [showReceipt, setShowReceipt] = useState(false);
 
   // Load taken seats
   useEffect(() => {
@@ -525,8 +534,10 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
 
     setBookingRef(ref);
     setConfirmedSeats([...selectedSeats].sort());
+    setCurrentBooking(newBooking);
     setSelectedSeats(new Set());
     setShowPassengerForm(false);
+    setShowReceipt(true);
     setModalOpen(true);
   };
 
@@ -578,6 +589,30 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
               </div>
             </div>
 
+            {trip && (
+              <div style={{ background:'var(--cream)', borderRadius:'12px', padding:'16px', marginTop:'16px', marginBottom:'16px' }}>
+                <div style={{ display:'flex', gap:'20px', flexWrap:'wrap', fontSize:'0.85rem', fontWeight:'600', color:'var(--ink)' }}>
+                  <div>🚌 {trip.busType}</div>
+                  <div>⏱️ {trip.duration}h</div>
+                  {trip.driver && <div>👨‍✈️ {trip.driver.name}</div>}
+                </div>
+                {trip.amenities && trip.amenities.length > 0 && (
+                  <div style={{ display:'flex', gap:'8px', flexWrap:'wrap', marginTop:'10px' }}>
+                    {trip.amenities.map((amenity, idx) => (
+                      <span key={idx} style={{ display:'inline-flex', alignItems:'center', gap:'4px', padding:'4px 10px', background:'rgba(232,93,38,0.1)', borderRadius:'6px', fontSize:'0.75rem', color:'var(--accent)', fontWeight:'600' }}>
+                        {amenity === 'WiFi' && '📶'}
+                        {amenity === 'AC' && '❄️'}
+                        {amenity === 'Toilet' && '🚻'}
+                        {amenity === 'USB Charger' && '🔌'}
+                        {amenity === 'Reclining Seats' && '🪑'}
+                        {amenity}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
             {departed && <div className="departed-msg">This trip has already departed.</div>}
 
             <div className="legend">
@@ -587,6 +622,7 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
                 </div>
               ))}
             </div>
+            <div className="legend-note">💡 Window seats: columns A & D | Aisle seats: columns B & C</div>
 
             <div className="bus-floor">
               <div className="bus-front" />
@@ -761,14 +797,33 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
 
           {!showPassengerForm && modalOpen && (
             <>
-              <div className="modal-icon"><CheckIcon /></div>
-              <h2>You're booked!</h2>
-              <p>All passenger details have been recorded. Show this reference at the terminal.</p>
-              <div className="booking-ref">{bookingRef}</div>
-              <div className="booked-seats-display">
-                {confirmedSeats.map(id => <div key={id} className="booked-seat-chip">Seat {id}</div>)}
-              </div>
-              <button className="modal-close-btn" onClick={() => setModalOpen(false)}>Done, thanks!</button>
+              {showReceipt ? (
+                <div className="modal-receipt" style={{ maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto', width: '100%' }}>
+                  <Receipt booking={currentBooking} trip={trip} />
+                  <button
+                    className="modal-close-btn"
+                    onClick={() => {
+                      setModalOpen(false);
+                      setShowReceipt(false);
+                      onMyBookings?.();
+                    }}
+                    style={{ marginTop: '16px' }}
+                  >
+                    Done, thanks!
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="modal-icon"><CheckIcon /></div>
+                  <h2>You're booked!</h2>
+                  <p>All passenger details have been recorded. Show this reference at the terminal.</p>
+                  <div className="booking-ref">{bookingRef}</div>
+                  <div className="booked-seats-display">
+                    {confirmedSeats.map(id => <div key={id} className="booked-seat-chip">Seat {id}</div>)}
+                  </div>
+                  <button className="modal-close-btn" onClick={() => setShowReceipt(true)}>View Receipt & Download →</button>
+                </>
+              )}
             </>
           )}
         </div>

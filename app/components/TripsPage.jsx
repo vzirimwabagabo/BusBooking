@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import tripsData from "../data/trips.json";
+import { handleExpiredTrips } from "../utils/tripExpiration";
+import { normalizeTripsForDate } from "../utils/dateNormalization";
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
@@ -107,6 +109,15 @@ const styles = `
     white-space: nowrap;
   }
   .search-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(232,93,38,0.3); }
+
+  /* TRIP INFO */
+  .trip-amenities { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+  .amenity-tag { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; background:rgba(232,93,38,0.1); border-radius:6px; font-size:0.7rem; color:var(--accent); font-weight:600; }
+  .bus-info { display:flex; gap:16px; margin-top:8px; font-size:0.78rem; color:var(--muted); flex-wrap:wrap; }
+  .bus-info-item { display:flex; align-items:center; gap:4px; }
+  .driver-section { padding:12px; background:var(--cream); border-radius:10px; margin-top:12px; font-size:0.78rem; }
+  .driver-name { font-family:'Poppins',sans-serif; font-weight:700; color:var(--ink); }
+  .driver-rating { color:var(--accent); font-weight:600; margin-left:4px; }
 
   /* TRIPS LIST */
   .trips-list-section {
@@ -319,26 +330,11 @@ export default function TripsPage({ onSelectTrip, onMyBookings }) {
 
   // Calculate normalized trips only once on mount
   useEffect(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    // Check and reset seats for expired trips
+    handleExpiredTrips(tripsData.trips);
 
-    const normalized = tripsData.trips.map((trip) => {
-      // Parse the original trip date
-      const originalDate = new Date(trip.date);
-      
-      // Calculate offset from the original base date (2026-03-26)
-      const baseDate = new Date("2026-03-26");
-      const daysOffset = Math.floor((originalDate - baseDate) / (1000 * 60 * 60 * 24));
-      
-      // Apply offset to today to get the normalized date
-      const normalizedDate = new Date(today);
-      normalizedDate.setDate(normalizedDate.getDate() + daysOffset);
-      
-      return {
-        ...trip,
-        date: normalizedDate.toISOString().split('T')[0]
-      };
-    });
+    // Normalize trip dates to be relative to today
+    const normalized = normalizeTripsForDate(tripsData.trips);
 
     normalizedTripsRef.current = normalized;
     setFiltered(normalized);
@@ -348,8 +344,7 @@ export default function TripsPage({ onSelectTrip, onMyBookings }) {
     const results = normalizedTripsRef.current.filter((t) => {
       const matchFrom = from ? t.from.toLowerCase() === from.toLowerCase() : true;
       const matchTo = to ? t.to.toLowerCase() === to.toLowerCase() : true;
-      const matchDate = travelDate ? t.date === travelDate : true;
-      return matchFrom && matchTo && matchDate;
+      return matchFrom && matchTo;
     });
     setFiltered(results);
   };
@@ -407,13 +402,6 @@ export default function TripsPage({ onSelectTrip, onMyBookings }) {
                 <option value="">To — any city</option>
                 {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
-              <input
-                type="date"
-                className="search-date"
-                value={travelDate}
-                onChange={(e) => setTravelDate(e.target.value)}
-                min={new Date().toISOString().split('T')[0]}
-              />
               <button
                 className="inline-flex min-h-[3.5rem] shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-[#e85d26] px-7 py-4 text-xs font-bold uppercase leading-none tracking-[0.22em] text-white shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl sm:min-w-[11rem]"
                 onClick={handleSearch}
@@ -462,10 +450,42 @@ export default function TripsPage({ onSelectTrip, onMyBookings }) {
                         <span className="meta-val">{trip.time}</span>
                       </div>
                       <div className="trip-meta-item">
+                        <span className="meta-label">Duration</span>
+                        <span className="meta-val">{trip.duration}h</span>
+                      </div>
+                      <div className="trip-meta-item">
                         <span className="meta-label">Seats</span>
                         <span className={`seats-badge ${badge.cls}`}>● {badge.label}</span>
                       </div>
                     </div>
+                    
+                    <div className="bus-info">
+                      <div className="bus-info-item">🚌 {trip.busType}</div>
+                    </div>
+
+                    {trip.amenities && trip.amenities.length > 0 && (
+                      <div className="trip-amenities">
+                        {trip.amenities.map((amenity, idx) => (
+                          <div key={idx} className="amenity-tag">
+                            {amenity === 'WiFi' && '📶'}
+                            {amenity === 'AC' && '❄️'}
+                            {amenity === 'Toilet' && '🚻'}
+                            {amenity === 'USB Charger' && '🔌'}
+                            {amenity === 'Reclining Seats' && '🪑'}
+                            {amenity}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {trip.driver && (
+                      <div className="driver-section">
+                        <div className="driver-name">
+                          👨‍✈️ {trip.driver.name}
+                          <span className="driver-rating">★ {trip.driver.rating}</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div className="trip-card-right">
                     <div className="trip-price">
