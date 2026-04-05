@@ -6,7 +6,7 @@ export default function Receipt({ booking, trip }) {
   const generatePDF = () => {
     const html2pdf = require('html2pdf.js');
     const element = document.getElementById('receipt-content');
-    
+
     const options = {
       margin: 10,
       filename: `Booking-${booking.ref}.pdf`,
@@ -14,7 +14,7 @@ export default function Receipt({ booking, trip }) {
       html2canvas: { scale: 2 },
       jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
     };
-    
+
     html2pdf().set(options).from(element).save();
   };
 
@@ -56,7 +56,7 @@ export default function Receipt({ booking, trip }) {
       >
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '24px', borderBottom: '2px solid #e85d26', paddingBottom: '16px' }}>
-          <div style={{ fontSize: '24px', fontWeight: '800', color: '#e85d26', marginBottom: '4px' }}>🚌 RideFlow</div>
+          <div style={{ fontSize: '24px', fontWeight: '800', color: '#e85d26', marginBottom: '4px' }}>RideFlow</div>
           <div style={{ fontSize: '12px', color: '#9a9488' }}>Bus Booking Receipt</div>
         </div>
 
@@ -120,11 +120,11 @@ export default function Receipt({ booking, trip }) {
                     color: '#e85d26'
                   }}
                 >
-                  {amenity === 'WiFi' && '📶 '}
-                  {amenity === 'AC' && '❄️ '}
-                  {amenity === 'Toilet' && '🚻 '}
-                  {amenity === 'USB Charger' && '🔌 '}
-                  {amenity === 'Reclining Seats' && '🪑 '}
+                  {amenity === 'WiFi'}
+                  {amenity === 'AC'}
+                  {amenity === 'Toilet'}
+                  {amenity === 'USB Charger'}
+                  {amenity === 'Reclining Seats'}
                   {amenity}
                 </span>
               ))}
@@ -172,8 +172,8 @@ export default function Receipt({ booking, trip }) {
                     </div>
                     <div>
                       <div style={{ fontSize: '12px', fontWeight: '600', marginBottom: '4px' }}>{passenger.name}</div>
-                      <div style={{ fontSize: '11px', color: '#9a9488', marginBottom: '2px' }}>📧 {passenger.email || '-'}</div>
-                      <div style={{ fontSize: '11px', color: '#9a9488' }}>📱 {passenger.phone || '-'}</div>
+                      <div style={{ fontSize: '11px', color: '#9a9488', marginBottom: '2px' }}>{passenger.email || '-'}</div>
+                      <div style={{ fontSize: '11px', color: '#9a9488' }}>{passenger.phone || '-'}</div>
                     </div>
                   </div>
                 </div>
@@ -230,7 +230,7 @@ export default function Receipt({ booking, trip }) {
           e.target.style.transform = 'translateY(0)';
         }}
       >
-        📥 Download Receipt (PDF)
+        Download Receipt (PDF)
       </button>
     </div>
   );

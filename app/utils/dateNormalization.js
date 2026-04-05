@@ -1,10 +1,4 @@
-/**
- * Date normalization utility for trips
- * Ensures trip dates are always relative to the current date
- */
-
-const BASE_DATE = "2026-03-26"; // Original base date in trips.json
-
+const BASE_DATE = "2026-03-26";
 const BASE_TIME = "";
 export function getTodayDateString() {
   const today = new Date();
@@ -38,15 +32,15 @@ function addDaysToDate(dateStr, days) {
  */
 export function normalizeTripDate(trip, originalBaseDate = BASE_DATE) {
   if (!trip.date) return trip;
-  
+
   const today = getTodayDateString();
   const daysOffset = getDaysDifference(originalBaseDate, trip.date);
   const normalizedDate = addDaysToDate(today, daysOffset);
-  
+
   return {
     ...trip,
     date: normalizedDate,
-    originalDate: trip.originalDate || trip.date, // Store original date if not already stored
+    originalDate: trip.originalDate || trip.date,
   };
 }
 
@@ -58,7 +52,7 @@ export function normalizeTripDate(trip, originalBaseDate = BASE_DATE) {
  */
 export function normalizeTripsForDate(trips, originalBaseDate = BASE_DATE) {
   if (!Array.isArray(trips)) return [];
-  
+
   return trips.map(trip => normalizeTripDate(trip, originalBaseDate));
 }
 
@@ -71,8 +65,8 @@ export function normalizeTripsForDate(trips, originalBaseDate = BASE_DATE) {
  */
 export function updateTripsDatesToToday(tripsData, originalBaseDate = BASE_DATE) {
   if (!tripsData || !Array.isArray(tripsData.trips)) return tripsData;
-  
+
   tripsData.trips = tripsData.trips.map(trip => normalizeTripDate(trip, originalBaseDate));
-  
+
   return tripsData;
 }

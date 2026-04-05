@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import tripsData from "../data/trips.json";
-import { handleExpiredTrips } from "../utils/tripExpiration";
+import { handleExpiredTripsAsync } from "../utils/tripExpiration";
 import { normalizeTripsForDate } from "../utils/dateNormalization";
+import { fetchStore } from "../utils/dataStore";
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
@@ -79,20 +80,7 @@ const styles = `
     outline: none;
     cursor: pointer;
   }
-  .search-date {
-    cursor: text;
-  }
-  .search-date:focus {
-    box-shadow: 0 0 0 3px rgba(232,93,38,0.1);
-    border-color: var(--accent);
-  }
-  .search-date {
-    cursor: text;
-  }
-  .search-date:focus {
-    box-shadow: 0 0 0 3px rgba(232,93,38,0.1);
-    border-color: var(--accent);
-  }
+
   .search-btn {
     padding: 12px 28px;
     background: var(--accent);
@@ -324,20 +312,27 @@ function BusIcon({ className = "h-8 w-8" }) {
 export default function TripsPage({ onSelectTrip, onMyBookings }) {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
-  const [travelDate, setTravelDate] = useState("");
-  const [filtered, setFiltered] = useState([]);
-  const normalizedTripsRef = useRef([]);
+  // Normalize trip dates to be relative to today
+  const [filtered, setFiltered] = useState(() => normalizeTripsForDate(tripsData.trips));
+  const normalizedTripsRef = useRef(filtered);
 
-  // Calculate normalized trips only once on mount
+  // Calculate external side effects like cleanup only on mount
   useEffect(() => {
-    // Check and reset seats for expired trips
-    handleExpiredTrips(tripsData.trips);
+    const initData = async () => {
+      // Clean up server json if necessary using normalized normalizedTripsRef
+      await handleExpiredTripsAsync(normalizedTripsRef.current);
 
-    // Normalize trip dates to be relative to today
-    const normalized = normalizeTripsForDate(tripsData.trips);
+      const store = await fetchStore();
 
-    normalizedTripsRef.current = normalized;
-    setFiltered(normalized);
+      const loadedTrips = normalizedTripsRef.current.map(trip => {
+        const tripTaken = store.takenSeats[trip.id] || [];
+        return { ...trip, availableSeatsObj: trip.totalSeats - tripTaken.length };
+      });
+
+      setFiltered(loadedTrips);
+      normalizedTripsRef.current = loadedTrips;
+    };
+    initData();
   }, []);
 
   const handleSearch = () => {
@@ -349,18 +344,7 @@ export default function TripsPage({ onSelectTrip, onMyBookings }) {
     setFiltered(results);
   };
 
-  const getTakenSeats = (tripId) => {
-    if (typeof window === 'undefined' || !window.localStorage) return [];
-    try {
-      const stored = localStorage.getItem(`rideflow_taken_${tripId}`);
-      return stored ? JSON.parse(stored) : [];
-    } catch (err) {
-      console.warn(`Failed to parse taken seats for trip ${tripId}:`, err);
-      return [];
-    }
-  };
 
-  const getAvailableSeats = (trip) => trip.totalSeats - getTakenSeats(trip.id).length;
 
   const getSeatsBadge = (available) => {
     if (available === 0) return { cls: "full", label: "Full" };
@@ -392,7 +376,7 @@ export default function TripsPage({ onSelectTrip, onMyBookings }) {
               <TicketIcon />
               <span>My Bookings</span>
             </button>
-      
+
             <div className="search-bar">
               <select className="search-select" value={from} onChange={(e) => setFrom(e.target.value)}>
                 <option value="">From — any city</option>
@@ -422,7 +406,7 @@ export default function TripsPage({ onSelectTrip, onMyBookings }) {
 
           {filtered.length === 0 ? (
             <div className="no-results">
-              <div className="icon" style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", color:"var(--accent)" }}>
+              <div className="icon" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", color: "var(--accent)" }}>
                 <BusIcon />
               </div>
               <h3>No trips found</h3>
@@ -430,7 +414,7 @@ export default function TripsPage({ onSelectTrip, onMyBookings }) {
             </div>
           ) : (
             filtered.map((trip) => {
-              const available = getAvailableSeats(trip);
+              const available = trip.availableSeatsObj !== undefined ? trip.availableSeatsObj : trip.totalSeats;
               const badge = getSeatsBadge(available);
               return (
                 <div className="trip-card" key={trip.id} onClick={() => onSelectTrip(trip)}>
@@ -458,20 +442,15 @@ export default function TripsPage({ onSelectTrip, onMyBookings }) {
                         <span className={`seats-badge ${badge.cls}`}>● {badge.label}</span>
                       </div>
                     </div>
-                    
+
                     <div className="bus-info">
-                      <div className="bus-info-item">🚌 {trip.busType}</div>
+                      <div className="bus-info-item">{trip.busType}</div>
                     </div>
 
                     {trip.amenities && trip.amenities.length > 0 && (
                       <div className="trip-amenities">
                         {trip.amenities.map((amenity, idx) => (
                           <div key={idx} className="amenity-tag">
-                            {amenity === 'WiFi' && '📶'}
-                            {amenity === 'AC' && '❄️'}
-                            {amenity === 'Toilet' && '🚻'}
-                            {amenity === 'USB Charger' && '🔌'}
-                            {amenity === 'Reclining Seats' && '🪑'}
                             {amenity}
                           </div>
                         ))}
@@ -481,7 +460,7 @@ export default function TripsPage({ onSelectTrip, onMyBookings }) {
                     {trip.driver && (
                       <div className="driver-section">
                         <div className="driver-name">
-                          👨‍✈️ {trip.driver.name}
+                          {trip.driver.name}
                           <span className="driver-rating">★ {trip.driver.rating}</span>
                         </div>
                       </div>

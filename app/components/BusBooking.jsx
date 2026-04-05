@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import Receipt from "./Receipt";
+import { fetchStore, saveStore } from "../utils/dataStore";
 
 // ── GOOGLE FONTS + CSS VARS (inject once) ───────────────────────────────────
 const FontLoader = () => (
@@ -191,7 +192,7 @@ const FontLoader = () => (
 // ── CONSTANTS ────────────────────────────────────────────────────────────────
 const ROWS = 12;
 const PRICE = 1200;
-const LETTERS = ["A","B","C","D"];
+const LETTERS = ["A", "B", "C", "D"];
 
 const getWindowSeats = () => {
   const ws = [];
@@ -213,20 +214,20 @@ const isTripDeparted = (trip) => {
 function BusSVG() {
   return (
     <svg viewBox="0 0 400 220" fill="none" xmlns="http://www.w3.org/2000/svg"
-      style={{ width:"100%", filter:"drop-shadow(0 40px 80px rgba(232,93,38,0.15))" }}>
-      <rect x="20" y="30" width="360" height="155" rx="18" fill="#1e1e2e" stroke="#e85d26" strokeWidth="1.5"/>
-      <rect x="320" y="48" width="48" height="80" rx="8" fill="#2d3a5e" stroke="rgba(45,107,228,0.4)" strokeWidth="1"/>
-      {[40,100,160,220].map((x,i) => (
-        <rect key={i} x={x} y="50" width="48" height="38" rx="6" fill="#2d3a5e" stroke="rgba(45,107,228,0.3)" strokeWidth="1"/>
+      style={{ width: "100%", filter: "drop-shadow(0 40px 80px rgba(232,93,38,0.15))" }}>
+      <rect x="20" y="30" width="360" height="155" rx="18" fill="#1e1e2e" stroke="#e85d26" strokeWidth="1.5" />
+      <rect x="320" y="48" width="48" height="80" rx="8" fill="#2d3a5e" stroke="rgba(45,107,228,0.4)" strokeWidth="1" />
+      {[40, 100, 160, 220].map((x, i) => (
+        <rect key={i} x={x} y="50" width="48" height="38" rx="6" fill="#2d3a5e" stroke="rgba(45,107,228,0.3)" strokeWidth="1" />
       ))}
-      <rect x="280" y="50" width="28" height="38" rx="6" fill="#2d3a5e" stroke="rgba(45,107,228,0.3)" strokeWidth="1"/>
-      <rect x="20" y="100" width="360" height="3" fill="#e85d26" opacity="0.6"/>
-      <circle cx="80" cy="190" r="20" fill="#0a0a0f" stroke="#333" strokeWidth="2"/>
-      <circle cx="80" cy="190" r="10" fill="#1a1a2e" stroke="#555" strokeWidth="1.5"/>
-      <circle cx="310" cy="190" r="20" fill="#0a0a0f" stroke="#333" strokeWidth="2"/>
-      <circle cx="310" cy="190" r="10" fill="#1a1a2e" stroke="#555" strokeWidth="1.5"/>
-      <rect x="250" y="110" width="32" height="60" rx="4" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1" strokeDasharray="3,3"/>
-      <rect x="368" y="70" width="8" height="20" rx="4" fill="#e85d26" opacity="0.8"/>
+      <rect x="280" y="50" width="28" height="38" rx="6" fill="#2d3a5e" stroke="rgba(45,107,228,0.3)" strokeWidth="1" />
+      <rect x="20" y="100" width="360" height="3" fill="#e85d26" opacity="0.6" />
+      <circle cx="80" cy="190" r="20" fill="#0a0a0f" stroke="#333" strokeWidth="2" />
+      <circle cx="80" cy="190" r="10" fill="#1a1a2e" stroke="#555" strokeWidth="1.5" />
+      <circle cx="310" cy="190" r="20" fill="#0a0a0f" stroke="#333" strokeWidth="2" />
+      <circle cx="310" cy="190" r="10" fill="#1a1a2e" stroke="#555" strokeWidth="1.5" />
+      <rect x="250" y="110" width="32" height="60" rx="4" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1" strokeDasharray="3,3" />
+      <rect x="368" y="70" width="8" height="20" rx="4" fill="#e85d26" opacity="0.8" />
       <text x="200" y="88" textAnchor="middle" fontFamily="Poppins, sans-serif" fontSize="10" fill="rgba(255,255,255,0.15)" letterSpacing="8">RIDEFLOW</text>
     </svg>
   );
@@ -312,13 +313,13 @@ function HeroSection({ progress }) {
     <section className="hero-section" id="heroSection">
       <div className="sticky-scene">
         <div className="starfield" />
-        <div style={{ position:"absolute", bottom:0, left:0, right:0, height:"40%", background:"linear-gradient(to top,#0d0d14 0%,transparent 100%)", opacity: groundOpacity }} />
-        <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at 50% 50%,#1e1a2e 0%,#0a0a0f 100%)", opacity: overlayOpacity, pointerEvents:"none", zIndex:5 }} />
+        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "40%", background: "linear-gradient(to top,#0d0d14 0%,transparent 100%)", opacity: groundOpacity }} />
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 50%,#1e1a2e 0%,#0a0a0f 100%)", opacity: overlayOpacity, pointerEvents: "none", zIndex: 5 }} />
         <div className="hero-text" style={{ opacity: heroOpacity }}>
           <div className="label">Your journey starts here</div>
           <h1>Ride<span>Flow</span></h1>
         </div>
-        <div style={{ position:"relative", zIndex:10, width:"min(500px,90vw)", transformOrigin:"center center", willChange:"transform", ...busStyle }}>
+        <div style={{ position: "relative", zIndex: 10, width: "min(500px,90vw)", transformOrigin: "center center", willChange: "transform", ...busStyle }}>
           <BusSVG />
         </div>
         <div className="scroll-hint" style={{ opacity: hintOpacity }}>
@@ -335,7 +336,7 @@ function Seat({ id, taken, selected, onClick }) {
   // Window seats: columns A and D (first and last)
   // Aisle seats: columns B and C (middle)
   const seatType = (id.includes('A') || id.includes('D')) ? 'window' : 'aisle';
-  
+
   return (
     <button
       className={`seat ${taken ? "taken" : ""} ${selected ? "seat-sel" : ""} ${seatType}-seat`}
@@ -352,8 +353,8 @@ function Seat({ id, taken, selected, onClick }) {
 // ── MAIN ──────────────────────────────────────────────────────────────────────
 export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }) {
   const [takenSeats, setTakenSeats] = useState(new Set());
-  const STORAGE_KEY = trip ? `rideflow_taken_${trip.id}` : "rideflow_taken_seats";
   const [selectedSeats, setSelectedSeats] = useState(new Set());
+  const [bookingDate, setBookingDate] = useState(modifyBooking ? modifyBooking.date : (trip?.date || ""));
   const [passengers, setPassengers] = useState(1);
   const [warning, setWarning] = useState("");
   const [progress, setProgress] = useState(0);
@@ -370,31 +371,37 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
 
   // Load taken seats
   useEffect(() => {
-    const departedFlag = isTripDeparted(trip);
-    setDeparted(departedFlag);
+    const loadSeats = async () => {
+      const departedFlag = isTripDeparted(trip);
+      setDeparted(departedFlag);
+      const store = await fetchStore();
 
-    if (departedFlag) {
-      localStorage.removeItem(STORAGE_KEY);
-      setTakenSeats(new Set());
-      return;
-    }
+      if (departedFlag) {
+        if (store.takenSeats[trip?.id] && store.takenSeats[trip.id].length > 0) {
+          store.takenSeats[trip.id] = [];
+          await saveStore(store);
+        }
+        setTakenSeats(new Set());
+        return;
+      }
 
-    const stored = localStorage.getItem(STORAGE_KEY);
-    let taken = stored ? JSON.parse(stored) : [];
+      let taken = store.takenSeats[trip?.id] || [];
 
-    // if modifying, release the old seats so user can repick
-    if (modifyBooking) {
-      taken = taken.filter(s => !modifyBooking.seats.includes(s));
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(taken));
-    }
+      // if modifying, release the old seats so user can repick
+      if (modifyBooking) {
+        taken = taken.filter(s => !modifyBooking.seats.includes(s));
+      }
 
-    setTakenSeats(new Set(taken));
-  }, []);
+      setTakenSeats(new Set(taken));
+    };
+    loadSeats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trip, modifyBooking]);
 
   // Pre-select seats if modifying
   useEffect(() => {
     if (modifyBooking) {
-      setSelectedSeats(new Set(modifyBooking.seats));
+      setTimeout(() => setSelectedSeats(new Set(modifyBooking.seats)), 0);
     }
   }, [modifyBooking]);
 
@@ -440,7 +447,7 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
     setSelectedSeats(prev => new Set([...prev].sort().slice(0, newCount)));
   };
 
- const handleBook = () => {
+  const handleBook = () => {
     if (selectedSeats.size === 0) return;
     if (selectedSeats.size !== passengers) {
       setWarning(`Please select exactly ${passengers} seat${passengers > 1 ? "s" : ""}.`);
@@ -450,9 +457,18 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
     // Initialize passenger details for each selected seat
     const seatList = [...selectedSeats].sort();
     const details = {};
-    seatList.forEach(seat => {
-      details[seat] = { name: "", email: "", phone: "" };
+
+    // Map previous passenger info if modifying
+    const oldPassengers = modifyBooking?.passengers ? Object.values(modifyBooking.passengers) : [];
+
+    seatList.forEach((seat, idx) => {
+      if (oldPassengers[idx]) {
+        details[seat] = { ...oldPassengers[idx] };
+      } else {
+        details[seat] = { name: "", email: "", phone: "" };
+      }
     });
+
     setPassengerDetails(details);
     setCurrentPassengerIdx(0);
     setPassengerErrors({});
@@ -500,17 +516,23 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
     }
   };
 
-  const completeBooking = () => {
+  const completeBooking = async () => {
+    const store = await fetchStore();
+
     // Cancel old booking if modifying
     if (modifyBooking) {
-      const bookings = JSON.parse(localStorage.getItem("rideflow_bookings") || "[]");
-      const updated = bookings.map(b => b.ref === modifyBooking.ref ? { ...b, status: "cancelled" } : b);
-      localStorage.setItem("rideflow_bookings", JSON.stringify(updated));
+      store.bookings = store.bookings.map(b =>
+        b.ref === modifyBooking.ref ? { ...b, status: "cancelled" } : b
+      );
+
+      // Strip old seats from the takenSeats array on the server so they don't persist
+      const existingTaken = store.takenSeats[trip.id] || [];
+      store.takenSeats[trip.id] = existingTaken.filter(s => !modifyBooking.seats.includes(s));
     }
 
-    const newTaken = new Set([...takenSeats, ...selectedSeats]);
+    const newTaken = new Set([...(store.takenSeats[trip.id] || []), ...selectedSeats]);
     setTakenSeats(newTaken);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify([...newTaken]));
+    store.takenSeats[trip.id] = [...newTaken];
 
     const ref = "RF-" + Math.random().toString(36).slice(2, 8).toUpperCase();
     const pricePerSeat = trip?.price ?? PRICE;
@@ -520,7 +542,7 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
       tripId: trip.id,
       from: trip.from,
       to: trip.to,
-      date: trip.date,
+      date: bookingDate,
       time: trip.time,
       price: pricePerSeat,
       seats: [...selectedSeats].sort(),
@@ -529,8 +551,8 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
       bookedAt: new Date().toISOString(),
     };
 
-    const existing = JSON.parse(localStorage.getItem("rideflow_bookings") || "[]");
-    localStorage.setItem("rideflow_bookings", JSON.stringify([...existing, newBooking]));
+    store.bookings.push(newBooking);
+    await saveStore(store);
 
     setBookingRef(ref);
     setConfirmedSeats([...selectedSeats].sort());
@@ -552,7 +574,7 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
   const routeFrom = trip?.from ?? "Departure";
   const routeTo = trip?.to ?? "Destination";
   const routeTime = trip?.time ?? "--:--";
-  const routeDate = trip?.date ?? "Date TBD";
+  const routeDate = bookingDate || "Date TBD";
   const pricePerSeat = trip?.price ?? PRICE;
   const total = selectedSeats.size * pricePerSeat;
 
@@ -584,27 +606,22 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
               <span className="city">{routeFrom}</span>
               <div className="arr" />
               <span className="city">{routeTo}</span>
-              <div style={{ marginLeft:12 }}>
+              <div style={{ marginLeft: 12 }}>
                 <div className="detail"><strong>{routeTime}</strong>{routeDate}</div>
               </div>
             </div>
 
             {trip && (
-              <div style={{ background:'var(--cream)', borderRadius:'12px', padding:'16px', marginTop:'16px', marginBottom:'16px' }}>
-                <div style={{ display:'flex', gap:'20px', flexWrap:'wrap', fontSize:'0.85rem', fontWeight:'600', color:'var(--ink)' }}>
-                  <div>🚌 {trip.busType}</div>
-                  <div>⏱️ {trip.duration}h</div>
-                  {trip.driver && <div>👨‍✈️ {trip.driver.name}</div>}
+              <div style={{ background: 'var(--cream)', borderRadius: '12px', padding: '16px', marginTop: '16px', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', fontSize: '0.85rem', fontWeight: '600', color: 'var(--ink)' }}>
+                  <div>{trip.busType}</div>
+                  <div>{trip.duration}h</div>
+                  {trip.driver && <div>{trip.driver.name}</div>}
                 </div>
                 {trip.amenities && trip.amenities.length > 0 && (
-                  <div style={{ display:'flex', gap:'8px', flexWrap:'wrap', marginTop:'10px' }}>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '10px' }}>
                     {trip.amenities.map((amenity, idx) => (
-                      <span key={idx} style={{ display:'inline-flex', alignItems:'center', gap:'4px', padding:'4px 10px', background:'rgba(232,93,38,0.1)', borderRadius:'6px', fontSize:'0.75rem', color:'var(--accent)', fontWeight:'600' }}>
-                        {amenity === 'WiFi' && '📶'}
-                        {amenity === 'AC' && '❄️'}
-                        {amenity === 'Toilet' && '🚻'}
-                        {amenity === 'USB Charger' && '🔌'}
-                        {amenity === 'Reclining Seats' && '🪑'}
+                      <span key={idx} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: 'rgba(232,93,38,0.1)', borderRadius: '6px', fontSize: '0.75rem', color: 'var(--accent)', fontWeight: '600' }}>
                         {amenity}
                       </span>
                     ))}
@@ -616,7 +633,7 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
             {departed && <div className="departed-msg">This trip has already departed.</div>}
 
             <div className="legend">
-              {[["ld-avail","Available"],["ld-selected","Your pick"],["ld-taken","Taken"]].map(([cls,label]) => (
+              {[["ld-avail", "Available"], ["ld-selected", "Your pick"], ["ld-taken", "Taken"]].map(([cls, label]) => (
                 <div className="legend-item" key={cls}>
                   <div className={`legend-dot ${cls}`} /><span>{label}</span>
                 </div>
@@ -627,7 +644,7 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
             <div className="bus-floor">
               <div className="bus-front" />
               <div className="driver-zone">
-                <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <div className="driver-seat"><MiniBusIcon /></div>
                   <span className="driver-label">Driver</span>
                 </div>
@@ -639,12 +656,12 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
                 {Array.from({ length: ROWS }, (_, i) => i + 1).map(row => (
                   <div className="seat-row" key={row}>
                     <div className="row-num">{row}</div>
-                    {[0,1].map(col => {
+                    {[0, 1].map(col => {
                       const id = `${row}${LETTERS[col]}`;
                       return <Seat key={id} id={id} taken={takenSeats.has(id)} selected={selectedSeats.has(id)} onClick={handleSeatClick} />;
                     })}
                     <div /> {/* aisle */}
-                    {[2,3].map(col => {
+                    {[2, 3].map(col => {
                       const id = `${row}${LETTERS[col]}`;
                       return <Seat key={id} id={id} taken={takenSeats.has(id)} selected={selectedSeats.has(id)} onClick={handleSeatClick} />;
                     })}
@@ -682,7 +699,7 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
                     <span>Tap a seat to select it</span>
                   </div>
                 ) : (
-                  <div style={{ display:"flex", flexWrap:"wrap" }}>
+                  <div style={{ display: "flex", flexWrap: "wrap" }}>
                     {sorted.map(id => (
                       <div key={id} className="seat-tag" onClick={() => deselect(id)}>
                         <span>Seat {id}</span><span className="remove">×</span>
@@ -724,8 +741,18 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
           {showPassengerForm && (
             <>
               <div className="passenger-form">
-                <h2 className="passenger-form-title">Passenger Details</h2>
-                <p className="passenger-form-subtitle">Fill in the details for each passenger</p>
+                <h2 className="passenger-form-title">Journey & Passenger Details</h2>
+                <p className="passenger-form-subtitle">Pick your travel date and fill details</p>
+
+                <div className="input-group" style={{ marginBottom: '16px' }}>
+                  <label>Travel Date</label>
+                  <input
+                    type="date"
+                    value={bookingDate}
+                    onChange={(e) => setBookingDate(e.target.value)}
+                    style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid #ddd", outline: "none", background: "var(--paper)", fontFamily: "'Poppins', sans-serif" }}
+                  />
+                </div>
 
                 {/* Tabs for seats */}
                 <div className="passenger-tabs">
@@ -815,7 +842,7 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
               ) : (
                 <>
                   <div className="modal-icon"><CheckIcon /></div>
-                  <h2>You're booked!</h2>
+                  <h2>You&apos;re booked!</h2>
                   <p>All passenger details have been recorded. Show this reference at the terminal.</p>
                   <div className="booking-ref">{bookingRef}</div>
                   <div className="booked-seats-display">

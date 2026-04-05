@@ -1,3 +1,4 @@
+import { fetchStore, saveStore } from "./dataStore";
 
 export function getTodayDate() {
   const today = new Date();
@@ -18,32 +19,37 @@ export function isTripExpired(tripDate) {
 }
 
 /**
- * Reset seats for an expired trip (make them available again for the next trip)
- * @param {string} tripId - The trip ID
+ * Reset seats for an expired trip
  */
-export function resetTripSeats(tripId) {
-  try {
-    const tripStorageKey = `rideflow_taken_${tripId}`;
-    localStorage.removeItem(tripStorageKey);
-    console.log(`Seats reset for expired trip: ${tripId}`);
-  } catch (err) {
-    console.warn(`Failed to reset seats for trip ${tripId}:`, err);
+export async function resetTripSeatsAsync(tripId, store) {
+  if (store.takenSeats[tripId] && store.takenSeats[tripId].length > 0) {
+    store.takenSeats[tripId] = [];
+    return true;
   }
+  return false;
 }
 
 /**
- * Check all trips and reset seats for expired trips
- * This should be called when the app initializes or when loading trips
- * @param {Array} trips - Array of trip objects
+ * Check all trips and reset seats for expired trips async
  */
-export function handleExpiredTrips(trips) {
+export async function handleExpiredTripsAsync(trips) {
   if (!Array.isArray(trips)) return;
+  
+  const store = await fetchStore();
+  let updated = false;
   
   trips.forEach((trip) => {
     if (trip.id && isTripExpired(trip.date)) {
-      resetTripSeats(trip.id);
+      if (store.takenSeats[trip.id] && store.takenSeats[trip.id].length > 0) {
+        store.takenSeats[trip.id] = [];
+        updated = true;
+      }
     }
   });
+
+  if (updated) {
+    await saveStore(store);
+  }
 }
 
 /**

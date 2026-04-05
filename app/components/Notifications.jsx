@@ -106,19 +106,29 @@ export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
-    // Load unread notifications
-    const unread = getUnreadNotifications();
-    setNotifications(unread);
+    // Run after initial mount to avoid sync setState in effect
+    const timer = setTimeout(() => {
+      const unread = getUnreadNotifications();
+      setNotifications(unread);
 
-    // Auto-dismiss after 5 seconds
-    const timers = unread.map(notif => {
-      return setTimeout(() => {
-        dismissNotification(notif.id);
-        setNotifications(prev => prev.filter(n => n.id !== notif.id));
-      }, 5000);
-    });
+      // Auto-dismiss after 5 seconds
+      const timers = unread.map(notif => {
+        return setTimeout(() => {
+          dismissNotification(notif.id);
+          setNotifications(prev => prev.filter(n => n.id !== notif.id));
+        }, 5000);
+      });
+      
+      // Store timers on the window or keep track of them for cleanup
+      window.__notifTimers = timers;
+    }, 0);
 
-    return () => timers.forEach(timer => clearTimeout(timer));
+    return () => {
+      clearTimeout(timer);
+      if (window.__notifTimers) {
+        window.__notifTimers.forEach(t => clearTimeout(t));
+      }
+    };
   }, []);
 
   const handleClose = (notifId) => {
