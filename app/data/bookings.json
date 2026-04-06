@@ -41,6 +41,27 @@
       },
       "status": "confirmed",
       "bookedAt": "2026-04-05T13:40:08.851Z"
+    },
+    {
+      "ref": "RF-3W92D3",
+      "tripId": "77",
+      "from": "Eldoret",
+      "to": "Nairobi",
+      "date": "2026-04-15",
+      "time": "02:00 PM",
+      "price": 800,
+      "seats": [
+        "2A"
+      ],
+      "passengers": {
+        "2A": {
+          "name": "Valentin Zirimwabagabo",
+          "email": "valentinzirimwabagabo96@gmail.com",
+          "phone": "+254758443326"
+        }
+      },
+      "status": "confirmed",
+      "bookedAt": "2026-04-05T15:02:24.004Z"
     }
   ],
   "takenSeats": {
@@ -49,6 +70,9 @@
     ],
     "2": [
       "1D"
+    ],
+    "77": [
+      "2A"
     ]
   }
 }
