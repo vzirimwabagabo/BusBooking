@@ -239,7 +239,6 @@ const PRICE_PER_SEAT = 1200;
 export default function MyBookings({ onBack, onModify }) {
   const [refInput, setRefInput] = useState("");
   const [seatsInput, setSeatsInput] = useState("");
-  const [dateInput, setDateInput] = useState("");
   const [nameInput, setNameInput] = useState("");
   const [booking, setBooking] = useState(null);
   const [bookings, setBookings] = useState([]); // For multiple bookings from name search
@@ -253,7 +252,6 @@ export default function MyBookings({ onBack, onModify }) {
   const handleLookup = async () => {
     const ref = refInput.trim().toUpperCase();
     const seats = seatsInput.trim().toUpperCase().split(',').map(s => s.trim()).filter(s => s);
-    const date = dateInput.trim();
     const name = nameInput.trim().toLowerCase();
 
     if (!ref && seats.length === 0 && !name) return;
@@ -268,8 +266,7 @@ export default function MyBookings({ onBack, onModify }) {
     } else if (seats.length > 0) {
       const found = allBookings.find((b) =>
         seats.every(seat => b.seats.includes(seat)) &&
-        b.status === "confirmed" &&
-        (!date || b.date === date)
+        b.status === "confirmed"
       );
       foundBookings = found ? [found] : [];
     } else if (name) {
@@ -336,7 +333,7 @@ export default function MyBookings({ onBack, onModify }) {
             <button className="back-btn" onClick={onBack}>← Back to trips</button>
             <span className="label">Manage your trip</span>
             <h1>My Bookings</h1>
-            <p>Search by booking reference, passenger name, seat numbers, or trip date to view, modify or cancel your reservation.</p>
+            <p>Search by booking reference, passenger name, or seat numbers to view, modify or cancel your reservation.</p>
 
             <div className="lookup-form" style={{ flexDirection: "column" }}>
               <div style={{ display: "flex", gap: "8px" }}>
@@ -366,14 +363,6 @@ export default function MyBookings({ onBack, onModify }) {
                   placeholder="Enter seat numbers e.g. 1A,1B"
                   value={seatsInput}
                   onChange={(e) => setSeatsInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleLookup()}
-                />
-                <input
-                  className="lookup-input"
-                  type="date"
-                  placeholder="(Optional) Trip date to narrow search"
-                  value={dateInput}
-                  onChange={(e) => setDateInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleLookup()}
                 />
               </div>
