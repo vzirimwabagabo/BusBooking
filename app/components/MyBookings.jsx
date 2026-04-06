@@ -298,8 +298,9 @@ export default function MyBookings({ onBack, onModify }) {
 
     // Release the seats back to available so they can be booked again
     if (booking.tripId) {
-      const taken = store.takenSeats[booking.tripId] || [];
-      store.takenSeats[booking.tripId] = taken.filter(s => !booking.seats.includes(s));
+      const tripKey = `${booking.tripId}_${booking.date}_${booking.time}`;
+      const taken = store.takenSeats[tripKey] || [];
+      store.takenSeats[tripKey] = taken.filter(s => !booking.seats.includes(s));
     }
 
     await saveStore(store);

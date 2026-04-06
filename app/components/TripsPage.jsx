@@ -325,7 +325,8 @@ export default function TripsPage({ onSelectTrip, onMyBookings }) {
       const store = await fetchStore();
 
       const loadedTrips = normalizedTripsRef.current.map(trip => {
-        const tripTaken = store.takenSeats[trip.id] || [];
+        const tripKey = `${trip.id}_${trip.date}_${trip.time}`;
+        const tripTaken = store.takenSeats[tripKey] || [];
         return { ...trip, availableSeatsObj: trip.totalSeats - tripTaken.length };
       });
 

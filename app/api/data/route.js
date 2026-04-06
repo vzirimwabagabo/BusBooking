@@ -16,12 +16,12 @@ function readData() {
     const parsed = fileContent.trim() ? JSON.parse(fileContent) : {};
     const bookings = parsed.bookings || [];
     
-    // Self-heal taken seats mapping to guarantee 100% accuracy of the JSON state
     const derivedTaken = {};
     bookings.forEach(b => {
       if (b.status === "confirmed") {
-        if (!derivedTaken[b.tripId]) derivedTaken[b.tripId] = [];
-        derivedTaken[b.tripId].push(...b.seats);
+        const tripKey = `${b.tripId}_${b.date}_${b.time}`;
+        if (!derivedTaken[tripKey]) derivedTaken[tripKey] = [];
+        derivedTaken[tripKey].push(...b.seats);
       }
     });
 

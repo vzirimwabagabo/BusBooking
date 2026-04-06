@@ -194,6 +194,35 @@ const ROWS = 12;
 const PRICE = 1200;
 const LETTERS = ["A", "B", "C", "D"];
 
+const getAvailableTimes = (timeStr) => {
+  let baseHour = 8;
+  let baseMin = '00';
+  const match = timeStr?.match(/(\d+):(\d+)\s*(AM|PM)/i);
+  if (match) {
+    let h = parseInt(match[1], 10);
+    const isPM = match[3].toUpperCase() === 'PM';
+    if (isPM && h !== 12) h += 12;
+    if (!isPM && h === 12) h = 0;
+    baseHour = h;
+    baseMin = match[2];
+  }
+  
+  const mHour = baseHour < 12 ? baseHour : 8;
+  const mMin = baseHour < 12 ? baseMin : '00';
+  const aHour = baseHour >= 12 ? baseHour : 14;
+  const aMin = baseHour >= 12 ? baseMin : '00';
+
+  const format12 = (hr, min) => {
+    const ampm = hr >= 12 ? 'PM' : 'AM';
+    const h12 = hr % 12 || 12;
+    return `${h12.toString().padStart(2, '0')}:${min} ${ampm}`;
+  };
+
+  return {
+    morning: format12(mHour, mMin),
+    afternoon: format12(aHour, aMin)
+  };
+};
 const getWindowSeats = () => {
   const ws = [];
   for (let r = 1; r <= ROWS; r++) {
@@ -203,7 +232,6 @@ const getWindowSeats = () => {
 };
 
 const isTripDeparted = (trip) => {
-  if (!trip) return false;
   const tripDateTime = new Date(`${trip.date}T${trip.time}`);
   if (isNaN(tripDateTime.getTime())) return false;
   const now = new Date();
@@ -284,53 +312,6 @@ function CheckIcon({ className = "h-8 w-8" }) {
   );
 }
 
-// ── HERO ──────────────────────────────────────────────────────────────────────
-function HeroSection({ progress }) {
-  let busStyle = {};
-  let heroOpacity = 1;
-  let hintOpacity = 1;
-  let overlayOpacity = 0;
-  let groundOpacity = 0;
-
-  if (progress < 0.4) {
-    const p = progress / 0.4;
-    busStyle = { transform: `scale(${1 + p * 0.3}) translateY(${p * -10}px)`, opacity: 1 };
-    heroOpacity = 1 - p * 0.6;
-    hintOpacity = Math.max(0, 1 - p * 2);
-    groundOpacity = p * 0.8;
-  } else if (progress < 0.75) {
-    const p = (progress - 0.4) / 0.35;
-    busStyle = { transform: `scale(${1.3 + p * 8}) translateY(${-10 - p * 5}px)`, opacity: Math.max(0, 1 - p * 1.5) };
-    heroOpacity = 0; hintOpacity = 0;
-    overlayOpacity = Math.min(p * 1.2, 1);
-    groundOpacity = Math.max(0, 0.8 - p);
-  } else {
-    busStyle = { opacity: 0 };
-    overlayOpacity = 1;
-  }
-
-  return (
-    <section className="hero-section" id="heroSection">
-      <div className="sticky-scene">
-        <div className="starfield" />
-        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "40%", background: "linear-gradient(to top,#0d0d14 0%,transparent 100%)", opacity: groundOpacity }} />
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 50%,#1e1a2e 0%,#0a0a0f 100%)", opacity: overlayOpacity, pointerEvents: "none", zIndex: 5 }} />
-        <div className="hero-text" style={{ opacity: heroOpacity }}>
-          <div className="label">Your journey starts here</div>
-          <h1>Ride<span>Flow</span></h1>
-        </div>
-        <div style={{ position: "relative", zIndex: 10, width: "min(500px,90vw)", transformOrigin: "center center", willChange: "transform", ...busStyle }}>
-          <BusSVG />
-        </div>
-        <div className="scroll-hint" style={{ opacity: hintOpacity }}>
-          <span>scroll to board</span>
-          <div className="scroll-arrow" />
-        </div>
-      </div>
-    </section>
-  );
-}
-
 // ── SEAT BUTTON ───────────────────────────────────────────────────────────────
 function Seat({ id, taken, selected, onClick }) {
   // Window seats: columns A and D (first and last)
@@ -355,9 +336,11 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
   const [takenSeats, setTakenSeats] = useState(new Set());
   const [selectedSeats, setSelectedSeats] = useState(new Set());
   const [bookingDate, setBookingDate] = useState(modifyBooking ? modifyBooking.date : (trip?.date || ""));
+  const availableTimes = getAvailableTimes(trip?.time);
+  const [bookingTime, setBookingTime] = useState(modifyBooking ? modifyBooking.time : "");
+  const [dateTimeError, setDateTimeError] = useState("");
   const [passengers, setPassengers] = useState(1);
   const [warning, setWarning] = useState("");
-  const [progress, setProgress] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [bookingRef, setBookingRef] = useState("");
   const [confirmedSeats, setConfirmedSeats] = useState([]);
@@ -372,23 +355,29 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
   // Load taken seats
   useEffect(() => {
     const loadSeats = async () => {
-      const departedFlag = isTripDeparted(trip);
+      // Create a specific proxy date for "has this shift already departed" check
+      const currentShiftTime = bookingTime || trip?.time || "00:00";
+      const checkTripDepart = { ...trip, date: bookingDate, time: currentShiftTime };
+      const departedFlag = isTripDeparted(checkTripDepart);
+      
       setDeparted(departedFlag);
       const store = await fetchStore();
 
+      const tripKey = `${trip?.id}_${bookingDate}_${currentShiftTime}`;
+
       if (departedFlag) {
-        if (store.takenSeats[trip?.id] && store.takenSeats[trip.id].length > 0) {
-          store.takenSeats[trip.id] = [];
+        if (store.takenSeats[tripKey] && store.takenSeats[tripKey].length > 0) {
+          store.takenSeats[tripKey] = [];
           await saveStore(store);
         }
         setTakenSeats(new Set());
         return;
       }
 
-      let taken = store.takenSeats[trip?.id] || [];
+      let taken = store.takenSeats[tripKey] || [];
 
       // if modifying, release the old seats so user can repick
-      if (modifyBooking) {
+      if (modifyBooking && modifyBooking.date === bookingDate && modifyBooking.time === currentShiftTime) {
         taken = taken.filter(s => !modifyBooking.seats.includes(s));
       }
 
@@ -396,7 +385,7 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
     };
     loadSeats();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trip, modifyBooking]);
+  }, [trip, modifyBooking, bookingDate, bookingTime]);
 
   // Pre-select seats if modifying
   useEffect(() => {
@@ -405,15 +394,7 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
     }
   }, [modifyBooking]);
 
-  // Scroll progress
-  useEffect(() => {
-    const onScroll = () => {
-      const hero = document.getElementById("heroSection");
-      if (hero) setProgress(Math.min(window.scrollY / (hero.offsetHeight * 0.6), 1));
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+
 
   // Auto-clear warning
   useEffect(() => {
@@ -451,6 +432,28 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
     if (selectedSeats.size === 0) return;
     if (selectedSeats.size !== passengers) {
       setWarning(`Please select exactly ${passengers} seat${passengers > 1 ? "s" : ""}.`);
+      return;
+    }
+
+    if (!bookingDate || !bookingTime) {
+      setDateTimeError("Please select both a travel date and time shift above.");
+      return;
+    }
+
+    // Convert bookingTime back to 24h for date validation
+    let checkHour = 8;
+    let checkMin = 0;
+    const tMatch = bookingTime.match(/(\d+):(\d+)\s*(AM|PM)/i);
+    if (tMatch) {
+       checkHour = parseInt(tMatch[1], 10);
+       if (tMatch[3].toUpperCase() === 'PM' && checkHour !== 12) checkHour += 12;
+       if (tMatch[3].toUpperCase() === 'AM' && checkHour === 12) checkHour = 0;
+       checkMin = parseInt(tMatch[2], 10);
+    }
+
+    const selectedDateTime = new Date(`${bookingDate}T${checkHour.toString().padStart(2, '0')}:${checkMin.toString().padStart(2, '0')}:00`);
+    if (isNaN(selectedDateTime.getTime()) || selectedDateTime < new Date()) {
+      setDateTimeError("Cannot book a trip in the past. Please select a valid future date and time.");
       return;
     }
 
@@ -519,6 +522,8 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
   const completeBooking = async () => {
     const store = await fetchStore();
 
+    const tripKey = `${trip.id}_${bookingDate}_${bookingTime}`;
+
     // Cancel old booking if modifying
     if (modifyBooking) {
       store.bookings = store.bookings.map(b =>
@@ -526,13 +531,14 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
       );
 
       // Strip old seats from the takenSeats array on the server so they don't persist
-      const existingTaken = store.takenSeats[trip.id] || [];
-      store.takenSeats[trip.id] = existingTaken.filter(s => !modifyBooking.seats.includes(s));
+      const oldTripKey = `${trip.id}_${modifyBooking.date}_${modifyBooking.time}`;
+      const existingTaken = store.takenSeats[oldTripKey] || [];
+      store.takenSeats[oldTripKey] = existingTaken.filter(s => !modifyBooking.seats.includes(s));
     }
 
-    const newTaken = new Set([...(store.takenSeats[trip.id] || []), ...selectedSeats]);
+    const newTaken = new Set([...(store.takenSeats[tripKey] || []), ...selectedSeats]);
     setTakenSeats(newTaken);
-    store.takenSeats[trip.id] = [...newTaken];
+    store.takenSeats[tripKey] = [...newTaken];
 
     const ref = "RF-" + Math.random().toString(36).slice(2, 8).toUpperCase();
     const pricePerSeat = trip?.price ?? PRICE;
@@ -543,7 +549,7 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
       from: trip.from,
       to: trip.to,
       date: bookingDate,
-      time: trip.time,
+      time: bookingTime,
       price: pricePerSeat,
       seats: [...selectedSeats].sort(),
       passengers: passengerDetails,
@@ -581,7 +587,6 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
   return (
     <>
       <FontLoader />
-      <HeroSection progress={progress} />
 
       <section className="booking-section">
         <div className="booking-inner">
@@ -679,6 +684,40 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
           {/* ── RIGHT: SUMMARY ── */}
           <div className="summary-panel">
             <div className="summary-card">
+              <h3>Trip Schedule</h3>
+
+              <div className="input-group" style={{ marginBottom: '16px' }}>
+                <label>Travel Date</label>
+                <input
+                  type="date"
+                  value={bookingDate}
+                  onChange={(e) => { 
+                    setBookingDate(e.target.value); 
+                    setDateTimeError(""); 
+                    if (!modifyBooking) setSelectedSeats(new Set());
+                  }}
+                  style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid #ddd", outline: "none", background: "var(--paper)", color: "var(--ink)", fontFamily: "'Poppins', sans-serif" }}
+                />
+              </div>
+
+              <div className="input-group" style={{ marginBottom: '16px' }}>
+                <label>Travel Time</label>
+                <select
+                  value={bookingTime}
+                  onChange={(e) => { 
+                    setBookingTime(e.target.value); 
+                    setDateTimeError(""); 
+                    if (!modifyBooking) setSelectedSeats(new Set());
+                  }}
+                  style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid #ddd", outline: "none", background: "var(--paper)", color: "var(--ink)", fontFamily: "'Poppins', sans-serif", appearance: "none" }}
+                >
+                  <option value="">Select a shift...</option>
+                  <option value={availableTimes.morning}>Morning Shift ({availableTimes.morning})</option>
+                  <option value={availableTimes.afternoon}>Afternoon Shift ({availableTimes.afternoon})</option>
+                </select>
+                {dateTimeError && <div style={{ color: "#d63c3c", fontSize: "0.75rem", marginTop: "4px", fontFamily: "'Poppins', sans-serif" }}>{dateTimeError}</div>}
+              </div>
+
               <h3>Booking Summary</h3>
 
               <div className="passenger-counter">
@@ -743,16 +782,6 @@ export default function BusBooking({ trip, modifyBooking, onBack, onMyBookings }
               <div className="passenger-form">
                 <h2 className="passenger-form-title">Journey & Passenger Details</h2>
                 <p className="passenger-form-subtitle">Pick your travel date and fill details</p>
-
-                <div className="input-group" style={{ marginBottom: '16px' }}>
-                  <label>Travel Date</label>
-                  <input
-                    type="date"
-                    value={bookingDate}
-                    onChange={(e) => setBookingDate(e.target.value)}
-                    style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid #ddd", outline: "none", background: "var(--paper)", fontFamily: "'Poppins', sans-serif" }}
-                  />
-                </div>
 
                 {/* Tabs for seats */}
                 <div className="passenger-tabs">
