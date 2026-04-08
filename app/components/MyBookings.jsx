@@ -238,10 +238,8 @@ const PRICE_PER_SEAT = 1200;
 
 export default function MyBookings({ onBack, onModify }) {
   const [refInput, setRefInput] = useState("");
-  const [seatsInput, setSeatsInput] = useState("");
-  const [nameInput, setNameInput] = useState("");
   const [booking, setBooking] = useState(null);
-  const [bookings, setBookings] = useState([]); // For multiple bookings from name search
+  const [bookings, setBookings] = useState([]);
   const [notFound, setNotFound] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -251,36 +249,14 @@ export default function MyBookings({ onBack, onModify }) {
 
   const handleLookup = async () => {
     const ref = refInput.trim().toUpperCase();
-    const seats = seatsInput.trim().toUpperCase().split(',').map(s => s.trim()).filter(s => s);
-    const name = nameInput.trim().toLowerCase();
-
-    if (!ref && seats.length === 0 && !name) return;
+    if (!ref) return;
 
     const store = await fetchStore();
     const allBookings = store.bookings || [];
-    let foundBookings = [];
+    const found = allBookings.find((b) => b.ref === ref);
+    const foundBookings = found ? [found] : [];
 
-    if (ref) {
-      const found = allBookings.find((b) => b.ref === ref);
-      foundBookings = found ? [found] : [];
-    } else if (seats.length > 0) {
-      const found = allBookings.find((b) =>
-        seats.every(seat => b.seats.includes(seat)) &&
-        b.status === "confirmed"
-      );
-      foundBookings = found ? [found] : [];
-    } else if (name) {
-      // Search by passenger name
-      foundBookings = allBookings.filter((b) => {
-        if (!b.passengers) return false;
-        return Object.values(b.passengers).some((passenger) => {
-          const passengerName = (passenger.name || "").toLowerCase();
-          return passengerName.includes(name);
-        });
-      });
-    }
-
-    setBooking(foundBookings.length === 1 ? foundBookings[0] : null);
+    setBooking(found ? found : null);
     setBookings(foundBookings);
     setNotFound(foundBookings.length === 0);
     setSearched(true);
@@ -333,38 +309,18 @@ export default function MyBookings({ onBack, onModify }) {
             <button className="back-btn" onClick={onBack}>← Back to trips</button>
             <span className="label">Manage your trip</span>
             <h1>My Bookings</h1>
-            <p>Search by booking reference, passenger name, or seat numbers to view, modify or cancel your reservation.</p>
+            <p>Search only by booking reference to ensure your booking stays private and secure.</p>
 
             <div className="lookup-form" style={{ flexDirection: "column" }}>
               <div style={{ display: "flex", gap: "8px" }}>
                 <input
                   className="lookup-input"
-                  placeholder="Enter reference e.g. RF-ABC123"
+                  placeholder="Enter booking reference e.g. RF-ABC123"
                   value={refInput}
                   onChange={(e) => setRefInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleLookup()}
                 />
                 <button className="lookup-btn" onClick={handleLookup}>Find →</button>
-              </div>
-              <div style={{ margin: "8px 0", textAlign: "center", color: "var(--muted)", fontSize: "0.8rem" }}>OR</div>
-              <div style={{ display: "flex", gap: "8px", flexDirection: "column" }}>
-                <input
-                  className="lookup-input"
-                  placeholder="Enter passenger name"
-                  value={nameInput}
-                  onChange={(e) => setNameInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleLookup()}
-                />
-              </div>
-              <div style={{ margin: "8px 0", textAlign: "center", color: "var(--muted)", fontSize: "0.8rem" }}>OR</div>
-              <div style={{ display: "flex", gap: "8px", flexDirection: "column" }}>
-                <input
-                  className="lookup-input"
-                  placeholder="Enter seat numbers e.g. 1A,1B"
-                  value={seatsInput}
-                  onChange={(e) => setSeatsInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleLookup()}
-                />
               </div>
             </div>
           </div>

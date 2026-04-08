@@ -167,6 +167,48 @@
       },
       "status": "confirmed",
       "bookedAt": "2026-04-06T15:45:06.240Z"
+    },
+    {
+      "ref": "RF-4LC1LY",
+      "tripId": "1",
+      "from": "Nairobi",
+      "to": "Mombasa",
+      "date": "2026-04-09",
+      "time": "08:30 AM",
+      "price": 1200,
+      "seats": [
+        "1D"
+      ],
+      "passengers": {
+        "1D": {
+          "name": "John Doe",
+          "email": "john@gmail.com",
+          "phone": "+254758443326"
+        }
+      },
+      "status": "confirmed",
+      "bookedAt": "2026-04-08T07:33:39.525Z"
+    },
+    {
+      "ref": "RF-33H5O7",
+      "tripId": "1",
+      "from": "Nairobi",
+      "to": "Mombasa",
+      "date": "2026-04-09",
+      "time": "08:30 AM",
+      "price": 1200,
+      "seats": [
+        "2D"
+      ],
+      "passengers": {
+        "2D": {
+          "name": "Jean bukuru",
+          "email": "jean@gmail.com",
+          "phone": "+250786216601"
+        }
+      },
+      "status": "confirmed",
+      "bookedAt": "2026-04-08T07:34:34.467Z"
     }
   ],
   "takenSeats": {
@@ -184,6 +226,10 @@
       "1D"
     ],
     "1_2026-04-07_02:00 PM": [
+      "2D"
+    ],
+    "1_2026-04-09_08:30 AM": [
+      "1D",
       "2D"
     ]
   }
